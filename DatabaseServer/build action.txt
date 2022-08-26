@@ -1,0 +1,2 @@
+mkdir $(ProjectDir)$(OutDir)Resources
+copy $(ProjectDir)Resources $(ProjectDir)$(OutDir)Resources

@@ -1,0 +1,30 @@
+﻿<Window x:Class="AsyncClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AsyncClient"
+        mc:Ignorable="d"
+        Title="Async Client MainWindow" Height="550" Width="800"
+       >
+    <Grid Margin="10">
+        <!-- A Canvas contains a collection of UIElement objects, which are in the Children property. -->
+        <Grid Name="ProfileCanvas" Margin="140,80,0,0" Width="100" Height="100" VerticalAlignment="Top" HorizontalAlignment="Left" >
+            <Image Name="ProfileImg"/>
+        </Grid>
+        <TextBox x:Name="FNameBox" HorizontalAlignment="Left" Height="27" Margin="297,61,0,0" TextWrapping="Wrap" Text="First Name" VerticalAlignment="Top" Width="200"/>
+        <TextBox x:Name="LNameBox" HorizontalAlignment="Left" Height="27" Margin="297,96,0,0" TextWrapping="Wrap" Text="Last Name" VerticalAlignment="Top" Width="200"/>
+        <TextBox x:Name="BalanceBox" HorizontalAlignment="Left" Height="27" Margin="297,130,0,0" TextWrapping="Wrap" Text="Balance" VerticalAlignment="Top" Width="200"/>
+        <TextBox x:Name="AcctNoBox" HorizontalAlignment="Left" Height="27" Margin="297,165,0,0" TextWrapping="Wrap" Text="Account No" VerticalAlignment="Top" Width="200"/>
+        <TextBox x:Name="PinBox" HorizontalAlignment="Left" Height="27" Margin="297,199,0,0" TextWrapping="Wrap" Text="Pin" VerticalAlignment="Top" Width="200"/>
+        <TextBox x:Name="TotalNum" HorizontalAlignment="Left" Height="24" Margin="297,270,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="62"/>
+        <Label x:Name="ErrorMessageLable" Content="" Foreground="Red" FontSize="12" HorizontalAlignment="Left" Height="24" Margin="297,231,0,0" VerticalAlignment="Top" Width="200"/>
+        <TextBlock HorizontalAlignment="Left" Height="35" Margin="168,265,0,0" TextWrapping="Wrap" Text="Total Number of Students" VerticalAlignment="Top" Width="124" />
+        <Button x:Name="GoButton" Content="Go" HorizontalAlignment="Left" Margin="437,270,0,0" VerticalAlignment="Top" Height="24" Width="60" Click="GoButton_Click"/>
+        <TextBlock x:Name="SearchingTitleBlock" HorizontalAlignment = "Left" Margin = "374,310,0,0" TextWrapping="Wrap" Text = "Searching" VerticalAlignment="Top" Width="90" />
+        <ProgressBar x:Name="SearchProgressBar" HorizontalAlignment="Left" Value="0" Minimum="0" Maximum ="100" Height="24" Width="200" Margin="297,332,0,0" VerticalAlignment="Top"  />
+        <TextBox x:Name="SearchBox" HorizontalAlignment="Left" Height="24" Margin="297,380,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="114"/>
+        <Button x:Name="SearchButton" HorizontalAlignment="Left" Content="Search"  Height="24" Margin="437,380,0,0" VerticalAlignment="Top" Width="60" Click="SearchButton_Click"/>
+    </Grid>
+
+</Window>
