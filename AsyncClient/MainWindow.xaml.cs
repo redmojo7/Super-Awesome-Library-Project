@@ -4,10 +4,13 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.ServiceModel;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using BusinessServer;
+using RestSharp;
+using Newtonsoft.Json;
+using API_Classes;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace AsyncClient
 {
@@ -16,22 +19,19 @@ namespace AsyncClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        private StudentBusinessServerInterface foob;
-        private string searchvalue;
+        private RestClient client;
 
         public MainWindow()
         {
             // Set up the window
             InitializeComponent();  
-
-            // This is a factory that generates remote connections to our remote class. This is what hides the RPC stuff!
-            ChannelFactory<StudentBusinessServerInterface> channelFactory; NetTcpBinding tcp = new NetTcpBinding();
-            // Set the URL and create the connection!
-            string URL = "net.tcp://localhost:8200/BusinessServer";
-            channelFactory = new ChannelFactory<StudentBusinessServerInterface>(tcp, URL);
-            foob = channelFactory.CreateChannel();
+            
+            string URL = "https://localhost:44324/";
+            client = new RestClient(URL);
+            RestRequest request = new RestRequest("api/entries", Method.Get); 
+            RestResponse numOfThings = client.Execute(request);
             // Also, tell me how many entries are in the DB.
-            TotalNum.Text = foob.GetNumEntries().ToString();
+            TotalNum.Text = numOfThings.Content;
         }
 
 
@@ -65,31 +65,31 @@ namespace AsyncClient
             // Set SearchProgressBar as Indeterminate
             SearchProgressBar.IsIndeterminate = true;
 
-            searchvalue = SearchBox.Text;
-            Task<StudentATO> searchTask = new Task<StudentATO>(SearchRequest);
-            searchTask.Start();
-            ///StudentATO stu = await searchTask;
-            // set timeout for async call
-            int timeout = 4000;
-            if (await Task.WhenAny(searchTask, Task.Delay(timeout)) == searchTask)
+
+            // send http request to search
+            SearchData mySearch = new SearchData(SearchBox.Text);
+            
+            RestRequest restRequest = new RestRequest("api/searching", Method.Post);
+            restRequest.AddHeader("Content-type", "application/json");
+            restRequest.AddBody(mySearch);
+            RestResponse restResponse = await client.ExecuteAsync(restRequest);
+
+            // Console.WriteLine(restResponse.Content);
+            DataIntermed student = JsonConvert.DeserializeObject<DataIntermed>(restResponse.Content);
+
+            if (student != null)
             {
-                StudentATO stu = searchTask.Result;
-                // task completed within timeout
-                if (null != stu)
+                restRequest = new RestRequest("api/profile", Method.Get);
+                restRequest.AddParameter("acctNo", student.acctNo);
+                byte[] bitmapdata = await client.DownloadDataAsync(restRequest);
+                using (var ms = new MemoryStream(bitmapdata))
                 {
-                    System.Console.WriteLine("searching : " + stu.ToString());
-                    UpdateGUI(stu.acctNo, stu.pin, stu.firstName, stu.lastName, stu.balance, stu.profile, null);
-                }
-                else
-                {
-                    MessageBox.Show("Sorry, cannot found a student!", "Message", MessageBoxButton.OK, MessageBoxImage.Error);
+                    student.profile = new Bitmap(ms);
                 }
             }
-            else
-            {
-                // timeout logic
-                MessageBox.Show("Sorry, search time out!", "Message", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            UpdateGUI(student, null);
+
+
             // Set TextBox SearchBox as editable
             SearchBox.Dispatcher.Invoke(() => SearchBox.IsReadOnly = false);
             // Enable the buttons on your GUI
@@ -98,67 +98,53 @@ namespace AsyncClient
             SearchProgressBar.Dispatcher.Invoke(() => SearchProgressBar.IsIndeterminate = false);
         }
 
-        private StudentATO SearchRequest()
-        {
-            uint acctNo = 0, pin = 0;
-            string firstName = null, lastName = null;
-            int balance = 0;
-            Bitmap profileBitmap;
-            foob.GetValuesForSearch(searchvalue, out acctNo, out pin, out balance, out firstName, out lastName, out profileBitmap);
-            //And now, set the values in the GUI!
-            if (acctNo != 0)
-            {
-                return new StudentATO(pin, acctNo, firstName, lastName, balance, profileBitmap);
-            }
-            return null;
-        }
-
         private void GoButton_Click(object sender, RoutedEventArgs routedEvent)
         {
-            int index = 0;
-            uint acctNo = 0, pin = 0;
-            string firstName = null, lastName = null;
-            int balance = 0;
-            Bitmap profileBitmap;
+            DataIntermed student = new DataIntermed();
             try
             {
-                // On click, Get the index....
-                index = int.Parse(TotalNum.Text);
-                // Then, run our RPC function, using the out mode parameters...
-                foob.GetValuesForEntry(index, out acctNo, out pin, out balance,
-                    out firstName, out lastName, out profileBitmap);
+                // send http request to search
+                RestRequest restRequest = new RestRequest("api/getValues", Method.Get);
+                restRequest.AddParameter("index", TotalNum.Text);
+                RestResponse restResponse = client.Execute(restRequest);
+                student = JsonConvert.DeserializeObject<DataIntermed>(restResponse.Content);
+                if (student != null)
+                {
+                    student.profile = getProfie(student.acctNo);
+                }
+
                 //And now, set the values in the GUI!
-                UpdateGUI(acctNo, pin, firstName, lastName, balance, profileBitmap, null);
+                UpdateGUI(student, null);
             }
             catch (FormatException fe)
             {
                 Console.WriteLine(fe.Message);
                 // Reset GUI
-                UpdateGUI(0, 0, null, null, 0, null, string.Format("The Parameter '{0}' Is Incorrect.", TotalNum.Text));
+                UpdateGUI(student, null);
             }
             catch (FaultException<ArgumentOutOfRangeException> oe)
             {
                 Console.WriteLine(oe.Message);
                 // Reset GUI
-                UpdateGUI(0, 0, null, null, 0, null, string.Format("The Parameter '{0}' Is Out of Range.", TotalNum.Text));
+                UpdateGUI(student, null);
             }
         }
 
         /*
         * UPDATE the Main Window (GUI)
         */
-        private void UpdateGUI(uint acctNo, uint pin, string firstName, string lastName, int balance, Bitmap profileBitmap, string errorMessage)
+        private void UpdateGUI(DataIntermed student, string errorMessage)
         {
             this.Dispatcher.Invoke(() =>
             {
-                FNameBox.Text = firstName;
-                LNameBox.Text = lastName;
-                BalanceBox.Text = balance.ToString("C");
-                AcctNoBox.Text = acctNo.ToString();
-                PinBox.Text = pin.ToString("D4");
+                FNameBox.Text = student.firstName;
+                LNameBox.Text = student.lastName;
+                BalanceBox.Text = student.balance.ToString("C");
+                AcctNoBox.Text = student.acctNo.ToString();
+                PinBox.Text = student.pin.ToString("D4");
                 ErrorMessageLable.Content = errorMessage;
                 // Set the image source.
-                ProfileImg.Source = (profileBitmap == null ? null : BmpImageFromBmp(profileBitmap));
+                ProfileImg.Source = (student.profile == null ? null : BmpImageFromBmp(student.profile));
             });
         }
 
@@ -186,6 +172,23 @@ namespace AsyncClient
                 // Return the image source.
                 return bitmapImage;
             }
+        }
+
+        /*
+         * 
+         */
+        private Bitmap getProfie(uint acctNo) 
+        {
+            // send http request to search
+            Bitmap profile;
+            RestRequest restRequest = new RestRequest("api/profile", Method.Get);
+            restRequest.AddParameter("acctNo", acctNo);
+            byte[] bitmapdata = client.DownloadData(restRequest);
+            using (var ms = new MemoryStream(bitmapdata))
+            {
+                profile = new Bitmap(ms);
+            }
+            return profile;
         }
 
     }

@@ -1,8 +1,8 @@
 ﻿using System.Drawing;
 
-namespace BusinessServer
+namespace API_Classes
 {
-    public class StudentATO
+    public class DataIntermed
     {
         public uint acctNo { get; set; }
         public uint pin { get; set; }
@@ -12,7 +12,7 @@ namespace BusinessServer
 
         public Bitmap profile { get; set; }
 
-        public StudentATO()
+        public DataIntermed()
         {
             acctNo = 0;
             pin = 0;
@@ -22,7 +22,7 @@ namespace BusinessServer
             profile = null;
         }
 
-        public StudentATO(uint pin, uint acctNo, string firstName, string lastName, int balance, Bitmap profile)
+        public DataIntermed(uint pin, uint acctNo, string firstName, string lastName, int balance, Bitmap profile)
         {
             this.pin = pin;
             this.acctNo = acctNo;
@@ -34,7 +34,7 @@ namespace BusinessServer
 
         public override string ToString()
         {
-            string info = "The student's name is " + firstName + " "+ lastName + "\n";
+            string info = "The student's name is " + firstName + " " + lastName + "\n";
             info = info + "The student's acctNo is " + acctNo + "\n";
             return info;
         }
