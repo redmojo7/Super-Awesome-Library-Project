@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using API_Classes;
 using System.Net.Http;
 using System.Threading.Tasks;
+using BusinessWebAPI.CustomException;
 
 namespace AsyncClient
 {
@@ -103,18 +104,25 @@ namespace AsyncClient
             DataIntermed student = new DataIntermed();
             try
             {
+                string errorMsm = null;
                 // send http request to search
                 RestRequest restRequest = new RestRequest("api/getValues", Method.Get);
                 restRequest.AddParameter("index", TotalNum.Text);
                 RestResponse restResponse = client.Execute(restRequest);
                 student = JsonConvert.DeserializeObject<DataIntermed>(restResponse.Content);
-                if (student != null)
+                if (restResponse.IsSuccessful && student != null)
                 {
                     student.profile = getProfie(student.acctNo);
                 }
+                else 
+                {
+                    MessageResponse exception = JsonConvert.DeserializeObject<MessageResponse>(restResponse.Content);
+                    errorMsm = exception.Message;
+                    student = new DataIntermed();
+                }
 
                 //And now, set the values in the GUI!
-                UpdateGUI(student, null);
+                UpdateGUI(student, errorMsm);
             }
             catch (FormatException fe)
             {
@@ -135,17 +143,20 @@ namespace AsyncClient
         */
         private void UpdateGUI(DataIntermed student, string errorMessage)
         {
-            this.Dispatcher.Invoke(() =>
+            if (student != null)
             {
-                FNameBox.Text = student.firstName;
-                LNameBox.Text = student.lastName;
-                BalanceBox.Text = student.balance.ToString("C");
-                AcctNoBox.Text = student.acctNo.ToString();
-                PinBox.Text = student.pin.ToString("D4");
-                ErrorMessageLable.Content = errorMessage;
-                // Set the image source.
-                ProfileImg.Source = (student.profile == null ? null : BmpImageFromBmp(student.profile));
-            });
+                this.Dispatcher.Invoke(() =>
+                {
+                    FNameBox.Text = student.firstName;
+                    LNameBox.Text = student.lastName;
+                    BalanceBox.Text = student.balance.ToString("C");
+                    AcctNoBox.Text = student.acctNo.ToString();
+                    PinBox.Text = student.pin.ToString("D4");
+                    ErrorMessageLable.Content = errorMessage;
+                    // Set the image source.
+                    ProfileImg.Source = (student.profile == null ? null : BmpImageFromBmp(student.profile));
+                });
+            }
         }
 
         /*
@@ -191,5 +202,14 @@ namespace AsyncClient
             return profile;
         }
 
+        private class MessageResponse
+        {
+            public MessageResponse()
+            {
+            }
+            public string Message { get; set; }
+        }
+
     }
+
 }

@@ -35,7 +35,6 @@ namespace BusinessWebAPI.Controllers
             if (acctNo != 0)
             {
                 // do searrching
-                DataIntermed student = null;
                 Bitmap profileBitmap = null;
                 int numEntry = foob.GetNumEntries();
                 for (int index = 1; index <= numEntry; index++)

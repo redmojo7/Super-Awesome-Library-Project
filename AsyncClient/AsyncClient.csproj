@@ -141,6 +141,10 @@
       <Project>{561AA6AE-400F-4467-A9DC-9AE0AD8748E6}</Project>
       <Name>BusinessServer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BusinessWebAPI\BusinessWebAPI.csproj">
+      <Project>{56C270AA-AACE-440E-8935-7CB80BF341C0}</Project>
+      <Name>BusinessWebAPI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

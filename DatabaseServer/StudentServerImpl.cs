@@ -6,7 +6,7 @@ using System.IO;
 
 namespace DatabaseServer
 {
-    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
+    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, InstanceContextMode = InstanceContextMode.Single,  UseSynchronizationContext = false)]
     internal class StudentServerImpl : StudentServerInterface
     {
         private const string resourcesPath = "Resources";

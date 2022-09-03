@@ -6,6 +6,7 @@ namespace DatabaseServer
 {
     internal class Program
     {
+
         static void Main(string[] args)
         {
             Console.WriteLine("hey so like welcome to data server");
@@ -13,8 +14,12 @@ namespace DatabaseServer
             ServiceHost host;
             // This represents a tcp/ip binding in the Windows network stack
             NetTcpBinding tcp = new NetTcpBinding();
+            StudentServerImpl studentServerImpl = new StudentServerImpl();
             // Bind server to the implementation of DataServer
-            host = new ServiceHost(typeof(StudentServerImpl));
+            //singletonInstance
+            host = new ServiceHost(studentServerImpl);
+
+            //host = new ServiceHost(typeof(StudentServerImpl));
             /* Present the publicly accessible interface to the client. 0.0.0.0 tells .net to
              accept on any interface. :8100 means this will use port 8100. DataService is a name for the
              actual service, this can be any string.*/
