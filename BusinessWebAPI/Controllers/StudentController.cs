@@ -12,7 +12,7 @@ using System.Web.Http;
 
 namespace BusinessWebAPI.Controllers
 {
-    [Route("api/student")]
+    //[Route("api/student")]
     public class StudentController : ApiController
     {
         private readonly BusinessWebService businessWebService;

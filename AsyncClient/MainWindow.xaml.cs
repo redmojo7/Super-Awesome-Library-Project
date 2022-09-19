@@ -263,7 +263,7 @@ namespace AsyncClient
             {
                 string errorMsm = null;
                 // send http request to search
-                RestRequest restRequest = new RestRequest("api/Students", Method.Post);
+                RestRequest restRequest = new RestRequest("api/student/insert", Method.Post);
                 restRequest.AddBody(student);
                 RestResponse restResponse = await client.ExecuteAsync(restRequest);
                 if (restResponse.IsSuccessful)
@@ -383,7 +383,7 @@ namespace AsyncClient
             {
                 string errorMsm = null;
                 // send http request to search
-                RestRequest restRequest = new RestRequest("api/Students", Method.Put);
+                RestRequest restRequest = new RestRequest("api/student/update", Method.Put);
                 restRequest.AddBody(student);
                 RestResponse restResponse = await client.ExecuteAsync(restRequest);
                 if (restResponse.IsSuccessful)

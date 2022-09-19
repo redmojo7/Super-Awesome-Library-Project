@@ -98,13 +98,17 @@ namespace BusinessWebAPI.App_Start
 
         internal void Insert(DataIntermed student)
         {
-            throw new NotImplementedException();
+            string result = businessWebDAO.insert(student);
         }
 
         internal void Update(DataIntermed student)
         {
-            string result = businessWebDAO.insert(student);
+            string result = businessWebDAO.Update(student);
         }
 
+        internal int GetNumEntries()
+        {
+            return businessWebDAO.GetNumEntries();
+        }
     }
 }

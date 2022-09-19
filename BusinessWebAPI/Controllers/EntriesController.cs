@@ -24,7 +24,7 @@ namespace BusinessWebAPI.Controllers
         [HttpGet]
         public IHttpActionResult GetNumEntries()
         {
-            return Ok(businessWebService.GenerateData());
+            return Ok(businessWebService.GetNumEntries());
         }
     }
 }
