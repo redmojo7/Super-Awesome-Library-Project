@@ -20,12 +20,10 @@ namespace BusinessWebAPI.Controllers
     {
 
         private readonly BusinessWebService businessWebService;
-        private StudentServerInterface foob;
 
         public ProfileController()
         {
             businessWebService = new BusinessWebService();
-            foob = new BusinessWebService().foob;
         }
 
         [HttpGet]
@@ -34,21 +32,7 @@ namespace BusinessWebAPI.Controllers
             HttpResponseMessage response;
             if (acctNo != 0)
             {
-                // do searrching
-                Bitmap profileBitmap = null;
-                int numEntry = foob.GetNumEntries();
-                for (int index = 1; index <= numEntry; index++)
-                {
-                    string firstName, lastName;
-                    int balance;
-                    uint acct, pin;
-                    
-                    foob.GetValuesForEntry(index, out acct, out pin, out balance, out firstName, out lastName, out profileBitmap);
-                    if (acct == acctNo)
-                    {
-                        break;
-                    }
-                }
+                Bitmap profileBitmap = businessWebService.getAvatar(acctNo);
 
                 Byte[] b;
                 using (var stream = new MemoryStream())
@@ -56,7 +40,6 @@ namespace BusinessWebAPI.Controllers
                     profileBitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
                     b = stream.ToArray();
                 }
-                //return File(BitmapToBytes(profile), "image/jpeg");
                 response = new HttpResponseMessage();
                 response.Content = new ByteArrayContent(b);
                 response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");

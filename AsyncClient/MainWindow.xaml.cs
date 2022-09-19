@@ -12,6 +12,8 @@ using API_Classes;
 using System.Net.Http;
 using System.Threading.Tasks;
 using BusinessWebAPI.CustomException;
+using System.Windows.Forms;
+using MessageBox = System.Windows.MessageBox;
 
 namespace AsyncClient
 {
@@ -208,6 +210,219 @@ namespace AsyncClient
             {
             }
             public string Message { get; set; }
+        }
+
+        private async void InsertButton_Click(object sender, RoutedEventArgs e)
+        {
+            //check
+            // Checking seaching key
+            // ensures no TextBoxes are empty
+            uint pin;
+            if (string.IsNullOrEmpty(PinBox.Text) || !uint.TryParse(PinBox.Text, out pin))
+            {
+                // display popup box
+                MessageBox.Show("Please put a valid Pin.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                PinBox.Focus(); // set focus to PinBox
+                return;
+            }
+            uint acctNo;
+            if (string.IsNullOrEmpty(AcctNoBox.Text) || !uint.TryParse(AcctNoBox.Text, out acctNo))
+            {
+                // display popup box
+                MessageBox.Show("Please put a valid AcctNo.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                AcctNoBox.Focus(); // set focus to AcctNoBox
+                return;
+            }
+            if (string.IsNullOrEmpty(FNameBox.Text) || !Regex.Match(FNameBox.Text, "^[\\p{L} \\.'\\-]+$").Success)
+            {
+                // display popup box
+                MessageBox.Show("Please put valid First Name.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                FNameBox.Focus(); // set focus to FNameBox
+                return;
+            }
+            if (string.IsNullOrEmpty(LNameBox.Text) || !Regex.Match(LNameBox.Text, "^[\\p{L} \\.'\\-]+$").Success)
+            {
+                // display popup box
+                MessageBox.Show("Please put a valid Last Name.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                LNameBox.Focus(); // set focus to LNameBox
+                return;
+            }
+            int balance;
+            if (string.IsNullOrEmpty(BalanceBox.Text) || !int.TryParse(BalanceBox.Text, out balance))
+            {
+                // display popup box
+                MessageBox.Show("Please put a valid Balance.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                BalanceBox.Focus(); // set focus to BalanceBox
+                return;
+            }
+
+            //uint pin, uint acctNo, string firstName, string lastName, int balance, Bitmap profile
+            DataIntermed student = new DataIntermed(Convert.ToUInt32(PinBox.Text), 
+                Convert.ToUInt32(AcctNoBox.Text), FNameBox.Text, LNameBox.Text, Convert.ToInt32(BalanceBox.Text), null);
+            try
+            {
+                string errorMsm = null;
+                // send http request to search
+                RestRequest restRequest = new RestRequest("api/Students", Method.Post);
+                restRequest.AddBody(student);
+                RestResponse restResponse = await client.ExecuteAsync(restRequest);
+                if (restResponse.IsSuccessful)
+                {
+                    if (null != ProfileImg.Source && !string.IsNullOrEmpty((string)FileNameLabel.Content))
+                    {
+                        RestRequest request = new RestRequest("api/Students", Method.Post);
+                        var selectedFileName = FileNameLabel.Content;
+                        
+                        request.AddFile("", (string)selectedFileName);
+                    }
+                    MessageBox.Show("Insert Successful!", "Message", MessageBoxButton.OK);
+                }
+                else
+                {
+                    Console.WriteLine(restResponse.Content);
+                    MessageBox.Show("Insert fail!", "Error", MessageBoxButton.OK);
+                }
+            }
+            catch (FormatException fe)
+            {
+                Console.WriteLine(fe.Message);
+            }
+            catch (FaultException<ArgumentOutOfRangeException> oe)
+            {
+                Console.WriteLine(oe.Message);
+            }
+
+        }
+
+        private async void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            uint acctNo;
+            if (string.IsNullOrEmpty(AcctNoBox.Text) || !uint.TryParse(AcctNoBox.Text, out acctNo))
+            {
+                // display popup box
+                MessageBox.Show("Please put a valid AcctNo.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                AcctNoBox.Focus(); // set focus to AcctNoBox
+                return;
+            }
+            try
+            {
+                string errorMsm = null;
+                // send http request to search
+                RestRequest restRequest = new RestRequest("api/Students/{id}", Method.Delete);
+                restRequest.AddUrlSegment("id", AcctNoBox.Text);
+                RestResponse restResponse = await client.ExecuteAsync(restRequest);
+                if (restResponse.IsSuccessful)
+                {
+                    MessageBox.Show("Delete Successful!", "Message", MessageBoxButton.OK);
+                }
+                else
+                {
+                    Console.WriteLine(restResponse.Content);
+                    MessageBox.Show("Delete fail!", "Error", MessageBoxButton.OK);
+                }
+            }
+            catch (FormatException fe)
+            {
+                Console.WriteLine(fe.Message);
+            }
+            catch (FaultException<ArgumentOutOfRangeException> oe)
+            {
+                Console.WriteLine(oe.Message);
+            }
+
+        }
+
+        private async void UpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            //check
+            // Checking seaching key
+            // ensures no TextBoxes are empty
+            uint pin;
+            if (string.IsNullOrEmpty(PinBox.Text) || !uint.TryParse(PinBox.Text, out pin))
+            {
+                // display popup box
+                MessageBox.Show("Please put a valid Pin.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                PinBox.Focus(); // set focus to PinBox
+                return;
+            }
+            uint acctNo;
+            if (string.IsNullOrEmpty(AcctNoBox.Text) || !uint.TryParse(AcctNoBox.Text, out acctNo))
+            {
+                // display popup box
+                MessageBox.Show("Please put a valid AcctNo.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                AcctNoBox.Focus(); // set focus to AcctNoBox
+                return;
+            }
+            if (string.IsNullOrEmpty(FNameBox.Text) || !Regex.Match(FNameBox.Text, "^[\\p{L} \\.'\\-]+$").Success)
+            {
+                // display popup box
+                MessageBox.Show("Please put valid First Name.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                FNameBox.Focus(); // set focus to FNameBox
+                return;
+            }
+            if (string.IsNullOrEmpty(LNameBox.Text) || !Regex.Match(LNameBox.Text, "^[\\p{L} \\.'\\-]+$").Success)
+            {
+                // display popup box
+                MessageBox.Show("Please put a valid Last Name.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                LNameBox.Focus(); // set focus to LNameBox
+                return;
+            }
+            int balance;
+            if (string.IsNullOrEmpty(BalanceBox.Text) || !int.TryParse(BalanceBox.Text, out balance))
+            {
+                // display popup box
+                MessageBox.Show("Please put a valid Balance.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                BalanceBox.Focus(); // set focus to BalanceBox
+                return;
+            }
+
+            //uint pin, uint acctNo, string firstName, string lastName, int balance, Bitmap profile
+            DataIntermed student = new DataIntermed(Convert.ToUInt32(PinBox.Text),
+                Convert.ToUInt32(AcctNoBox.Text), FNameBox.Text, LNameBox.Text, Convert.ToInt32(BalanceBox.Text), null);
+            try
+            {
+                string errorMsm = null;
+                // send http request to search
+                RestRequest restRequest = new RestRequest("api/Students", Method.Put);
+                restRequest.AddBody(student);
+                RestResponse restResponse = await client.ExecuteAsync(restRequest);
+                if (restResponse.IsSuccessful)
+                {
+                    MessageBox.Show("Update Successful!", "Message", MessageBoxButton.OK);
+                }
+                else
+                {
+                    Console.WriteLine(restResponse.Content);
+                    MessageBox.Show("Update fail!", "Error", MessageBoxButton.OK);
+                }
+            }
+            catch (FormatException fe)
+            {
+                Console.WriteLine(fe.Message);
+            }
+            catch (FaultException<ArgumentOutOfRangeException> oe)
+            {
+                Console.WriteLine(oe.Message);
+            }
+        }
+
+        private void BrowseButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.InitialDirectory = "c:\\";
+            dlg.Filter = "Image files (*.jpg)|*.jpg|All Files (*.*)|*.*";
+            dlg.RestoreDirectory = true;
+
+            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string selectedFileName = dlg.FileName;
+                FileNameLabel.Content = selectedFileName;
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.UriSource = new Uri(selectedFileName);
+                bitmap.EndInit();
+                ProfileImg.Source = bitmap;
+            }
         }
 
     }

@@ -27,22 +27,9 @@ namespace BusinessWebAPI.Controllers
         [HttpPost]
         public IHttpActionResult GetValuesForSearch(SearchData searchData)
         {
-            //Thread.Sleep(1000);
-            DataIntermed student = null;
-            int numEntry = foob.GetNumEntries();
-            for (int index = 1; index <= numEntry; index++)
-            {
-                string firstName, lastName;
-                int balance;
-                uint acctNo, pin;
-                Bitmap profileBitmap;
-                foob.GetValuesForEntry(index, out acctNo, out pin, out balance, out firstName, out lastName, out profileBitmap);
-                if (firstName.ToLower().Contains(searchData.searchStr.ToLower()))
-                {
-                    student = new DataIntermed(pin, acctNo, firstName, lastName, balance, null);
-                    break;
-                }
-            }
+            DataIntermed student = businessWebService.GetValuesForSearch(searchData.searchStr);
+
+            
             return Ok(student);
         }
     }

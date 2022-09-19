@@ -10,19 +10,19 @@ using System.Web.Http;
 namespace BusinessWebAPI.Controllers
 {
 
-    [Route("api/entries")]
-    public class EntriesController : ApiController
+    [Route("api/GenerateData")]
+    public class GenerateDataController : ApiController
     {
 
         private readonly BusinessWebService businessWebService;
 
-        public EntriesController()
+        public GenerateDataController()
         {
             businessWebService = new BusinessWebService();
         }
 
         [HttpGet]
-        public IHttpActionResult GetNumEntries()
+        public IHttpActionResult GenerateData()
         {
             return Ok(businessWebService.GenerateData());
         }
