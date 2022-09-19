@@ -425,6 +425,33 @@ namespace AsyncClient
             }
         }
 
+        private async void GenerateDBButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string errorMsm = null;
+                // send http request to search
+                RestRequest restRequest = new RestRequest("api/GenerateDB", Method.Get);
+                RestResponse restResponse = await client.ExecuteAsync(restRequest);
+                if (restResponse.IsSuccessful)
+                {
+                    MessageBox.Show("GenerateDB Successful!", "Message", MessageBoxButton.OK);
+                }
+                else
+                {
+                    Console.WriteLine(restResponse.Content);
+                    MessageBox.Show("GenerateDB fail!", "Error", MessageBoxButton.OK);
+                }
+            }
+            catch (FormatException fe)
+            {
+                Console.WriteLine(fe.Message);
+            }
+            catch (FaultException<ArgumentOutOfRangeException> oe)
+            {
+                Console.WriteLine(oe.Message);
+            }
+        }
     }
 
 }

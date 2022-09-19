@@ -29,14 +29,15 @@
         <TextBox x:Name="TotalNum" HorizontalAlignment="Left" Height="24" Margin="297,270,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="62"/>
         <Label x:Name="ErrorMessageLable" Content="" Foreground="Red" FontSize="12" HorizontalAlignment="Left" Height="24" Margin="297,231,0,0" VerticalAlignment="Top" Width="200"/>
         <TextBlock HorizontalAlignment="Left" Height="35" Margin="168,265,0,0" TextWrapping="Wrap" Text="Total Number of Students" VerticalAlignment="Top" Width="124" />
-        <Button x:Name="GoButton" Content="Go" HorizontalAlignment="Left" Margin="367,270,0,0" VerticalAlignment="Top" Height="24" Width="60" Click="GoButton_Click"/>
-        <Button x:Name="InsertButton" Content="Insert" HorizontalAlignment="Left" Margin="537,91,0,0" VerticalAlignment="Top" Height="24" Width="60" Click="InsertButton_Click"/>
-        <Button x:Name="DeleteButton" Content="Delete" HorizontalAlignment="Left" Margin="537,131,0,0" VerticalAlignment="Top" Height="24" Width="60" Click="DeleteButton_Click"/>
-        <Button x:Name="UpdateButton" Content="Update" HorizontalAlignment="Left" Margin="537,171,0,0" VerticalAlignment="Top" Height="24" Width="60" Click="UpdateButton_Click"/>
+        <Button x:Name="GoButton" Content="Go" HorizontalAlignment="Left" Margin="422,270,0,0" VerticalAlignment="Top" Height="24" Width="75" Click="GoButton_Click"/>
+        <Button x:Name="InsertButton" Content="Insert" HorizontalAlignment="Left" Margin="593,71,0,0" VerticalAlignment="Top" Height="24" Width="75" Click="InsertButton_Click"/>
+        <Button x:Name="DeleteButton" Content="Delete" HorizontalAlignment="Left" Margin="593,106,0,0" VerticalAlignment="Top" Height="24" Width="75" Click="DeleteButton_Click"/>
+        <Button x:Name="UpdateButton" Content="Update" HorizontalAlignment="Left" Margin="593,140,0,0" VerticalAlignment="Top" Height="24" Width="75" Click="UpdateButton_Click"/>
+        <Button x:Name="GenerateDBButton" Content="GenerateDB" HorizontalAlignment="Left" Margin="593,175,0,0" VerticalAlignment="Top" Height="24" Width="75" Click="GenerateDBButton_Click"/>
         <TextBlock x:Name="SearchingTitleBlock" HorizontalAlignment = "Left" Margin = "374,310,0,0" TextWrapping="Wrap" Text = "Searching" VerticalAlignment="Top" Width="90" />
         <ProgressBar x:Name="SearchProgressBar" HorizontalAlignment="Left" Value="0" Minimum="0" Maximum ="100" Height="24" Width="200" Margin="297,332,0,0" VerticalAlignment="Top"  />
         <TextBox x:Name="SearchBox" HorizontalAlignment="Left" Height="24" Margin="297,380,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="114"/>
-        <Button x:Name="SearchButton" HorizontalAlignment="Left" Content="Search"  Height="24" Margin="437,380,0,0" VerticalAlignment="Top" Width="60" Click="SearchButton_Click"/>
+        <Button x:Name="SearchButton" HorizontalAlignment="Left" Content="Search"  Height="24" Margin="422,380,0,0" VerticalAlignment="Top" Width="75" Click="SearchButton_Click"/>
     </Grid>
 
 </Window>

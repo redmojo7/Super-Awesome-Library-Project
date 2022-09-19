@@ -35,7 +35,7 @@ namespace BusinessWebAPI.App_Start
 
         internal Bitmap getAvatar(uint acctNo)
         {
-            businessWebDAO.getAvatar(acctNo);
+            businessWebDAO.GetAvatar(acctNo);
             // do searrching
             Bitmap profileBitmap = null;
             int numEntry = foob.GetNumEntries();
@@ -54,12 +54,12 @@ namespace BusinessWebAPI.App_Start
             return profileBitmap;
         }
 
-        internal int GenerateData()
+        internal string GenerateDB()
         {
-            int total;
-            total = businessWebDAO.GetNumEntries();
+            string result = "";
+            //total = businessWebDAO.GenerateDB();
 
-            return foob.GetNumEntries();
+            return result;
         }
 
         internal DataIntermed GetValuesForEntry(int index)
@@ -98,7 +98,7 @@ namespace BusinessWebAPI.App_Start
 
         internal void Insert(DataIntermed student)
         {
-            string result = businessWebDAO.insert(student);
+            string result = businessWebDAO.Insert(student);
         }
 
         internal void Update(DataIntermed student)

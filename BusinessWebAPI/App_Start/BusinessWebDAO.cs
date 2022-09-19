@@ -13,8 +13,12 @@ namespace BusinessWebAPI.App_Start
     {
         string URL = "http://localhost:53923/";
 
+        internal int GenerateDB()
+        {
+            throw new NotImplementedException();
+        }
 
-        internal void getAvatar(uint acctNo)
+        internal void GetAvatar(uint acctNo)
         {
             //throw new NotImplementedException();
         }
@@ -49,7 +53,7 @@ namespace BusinessWebAPI.App_Start
             return null;
         }
 
-        internal string insert(DataIntermed student)
+        internal string Insert(DataIntermed student)
         {
             RestClient client = new RestClient(URL);
             RestRequest request = new RestRequest("api/Students", Method.Post);

@@ -10,21 +10,21 @@ using System.Web.Http;
 namespace BusinessWebAPI.Controllers
 {
 
-    [Route("api/GenerateData")]
-    public class GenerateDataController : ApiController
+    [Route("api/GenerateDB")]
+    public class GenerateDBController : ApiController
     {
 
         private readonly BusinessWebService businessWebService;
 
-        public GenerateDataController()
+        public GenerateDBController()
         {
             businessWebService = new BusinessWebService();
         }
 
         [HttpGet]
-        public IHttpActionResult GenerateData()
+        public IHttpActionResult GenerateDB()
         {
-            return Ok(businessWebService.GenerateData());
+            return Ok(businessWebService.GenerateDB());
         }
     }
 }
