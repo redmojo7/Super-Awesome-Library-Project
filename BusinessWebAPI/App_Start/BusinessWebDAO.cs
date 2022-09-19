@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Web;
+using System.Web.Http.Results;
 
 namespace BusinessWebAPI.App_Start
 {
@@ -13,9 +14,17 @@ namespace BusinessWebAPI.App_Start
     {
         string URL = "http://localhost:53923/";
 
-        internal int GenerateDB()
+        internal string GenerateDB()
         {
-            throw new NotImplementedException();
+            string result = "GenerateDB fail!";
+            RestClient client = new RestClient(URL);
+            RestRequest restRequest = new RestRequest("api/Students/GenerateDB", Method.Get);
+            RestResponse restResponse = client.Execute(restRequest);
+            if (restResponse.IsSuccessful)
+            {
+                result = "GenerateDB Successful!";
+            }
+            return result;
         }
 
         internal void GetAvatar(uint acctNo)
