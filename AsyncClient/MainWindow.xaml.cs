@@ -132,9 +132,12 @@ namespace AsyncClient
                     MessageBox.Show("Get fail!", "Error", MessageBoxButton.OK);
                 }
                 
-                if (restResponse.IsSuccessful && student != null && !string.IsNullOrEmpty(student.Avatar))
+                if (restResponse.IsSuccessful)
                 {
-                    avarta = getProfie(student.Avatar);
+                    if (student != null && !string.IsNullOrEmpty(student.Avatar))
+                    {
+                        avarta = getProfie(student.Avatar);
+                    }
                 }
                 else 
                 {

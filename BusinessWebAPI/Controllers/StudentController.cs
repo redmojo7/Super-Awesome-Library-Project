@@ -136,14 +136,14 @@ namespace BusinessWebAPI.Controllers
             return Ok(student);
         }
 
-        [Route("api/Students/avarta/{Id}")]
+        [Route("api/Students/avarta/{id}")]
         [HttpPost]
-        public IHttpActionResult avarta(int Id)
+        public IHttpActionResult avarta(int id)
         {
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
             if (file.ContentLength > 0)
             {
-                businessWebService.UploadAvarta(Id, file);
+                businessWebService.UploadAvarta(id, file);
             }
             else
             {

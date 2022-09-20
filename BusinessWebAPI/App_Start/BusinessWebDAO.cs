@@ -151,6 +151,7 @@ namespace BusinessWebAPI.App_Start
 
         internal string Update(Student student)
         {
+            string result = "Error";
             RestClient client = new RestClient(URL);
             RestRequest request = new RestRequest("api/Students/{id}", Method.Put);
             if (student.Id != null)
@@ -160,7 +161,14 @@ namespace BusinessWebAPI.App_Start
             }
             request.AddBody(student);
             RestResponse response = client.Execute(request);
-            return "";
+            if (response != null)
+            {
+                if (response.IsSuccessful)
+                {
+                    result = "success";
+                }
+            }
+            return result;
         }
 
         internal string UploadAvarta(int id, HttpPostedFile file)
@@ -171,8 +179,8 @@ namespace BusinessWebAPI.App_Start
             BinaryReader br = new BinaryReader(fs);
 
             RestClient client = new RestClient(URL);
-            RestRequest request = new RestRequest("api/Students/avarta", Method.Post);
-            request.AddParameter("Id", id);
+            RestRequest request = new RestRequest("api/Students/avarta/{id}", Method.Post);
+            request.AddUrlSegment("id", id);
             request.AddFile("avarta", br.ReadBytes((Int32)fs.Length), file.FileName);
             request.AddHeader("Content-Type", "multipart/form-data");
             RestResponse response = client.Execute(request);
