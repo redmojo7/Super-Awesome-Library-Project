@@ -5,10 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Http.Results;
+using System.Web.UI.WebControls;
 
 namespace BusinessWebAPI.App_Start
 {
@@ -159,6 +161,29 @@ namespace BusinessWebAPI.App_Start
             request.AddBody(student);
             RestResponse response = client.Execute(request);
             return "";
+        }
+
+        internal string UploadAvarta(int id, HttpPostedFile file)
+        {
+            string result = "Error";
+            //Read the uploaded File as Byte Array from FileUpload control.
+            Stream fs = file.InputStream;
+            BinaryReader br = new BinaryReader(fs);
+
+            RestClient client = new RestClient(URL);
+            RestRequest request = new RestRequest("api/Students/avarta", Method.Post);
+            request.AddParameter("Id", id);
+            request.AddFile("avarta", br.ReadBytes((Int32)fs.Length), file.FileName);
+            request.AddHeader("Content-Type", "multipart/form-data");
+            RestResponse response = client.Execute(request);
+            if (response != null)
+            {
+                if (response.IsSuccessful)
+                {
+                    result = "success";
+                }
+            }
+            return result;
         }
     }
 }

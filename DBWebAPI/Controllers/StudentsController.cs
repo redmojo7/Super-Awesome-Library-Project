@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 using DBWebAPI.Models;
@@ -215,6 +216,38 @@ namespace DBWebAPI.Controllers
             {
                 return BadRequest();
             }
+        }
+
+        [Route("api/Students/avarta/{id}")]
+        [HttpPost]
+        public IHttpActionResult avarta(int id)
+        {
+            HttpRequest request = HttpContext.Current.Request;
+            HttpPostedFile file = HttpContext.Current.Request.Files[0];
+            // check file
+            if (file.ContentLength > 0)
+            {
+                var filename = Path.GetFileName(file.FileName);
+                string profileFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, resourcesPath, filename);
+                file.SaveAs(profileFullPath);
+                // search stu by id
+                Student student = db.Students.Find(id);
+                if (student == null)
+                {
+                    return NotFound();
+                }
+                // update Avatar
+                student.Avatar = filename;
+                try
+                {   // save to db
+                    db.SaveChanges();
+                }
+                catch (DbUpdateException)
+                {
+                    throw;
+                }
+            }
+            return Ok();
         }
 
         protected override void Dispose(bool disposing)

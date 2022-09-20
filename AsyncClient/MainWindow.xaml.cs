@@ -32,10 +32,12 @@ namespace AsyncClient
             
             string URL = "http://localhost:54863/";
             client = new RestClient(URL);
+            
             RestRequest request = new RestRequest("api/entries", Method.Get); 
             RestResponse numOfThings = client.Execute(request);
             // Also, tell me how many entries are in the DB.
             TotalNum.Text = numOfThings.Content;
+            
         }
 
 
@@ -113,7 +115,7 @@ namespace AsyncClient
             {
                 string errorMsm = null;
                 // send http request to search
-                RestRequest restRequest = new RestRequest("api/student/Get/", Method.Get);
+                RestRequest restRequest = new RestRequest("api/student/Get", Method.Get);
                 restRequest.AddParameter("Id", TotalNum.Text);
                 RestResponse restResponse = await client.ExecuteAsync(restRequest);
                 if (restResponse.IsSuccessful)
@@ -285,15 +287,15 @@ namespace AsyncClient
                 RestResponse restResponse = await client.ExecuteAsync(restRequest);
                 if (restResponse.IsSuccessful)
                 {
+                    // upload avarta to server
                     if (null != ProfileImg.Source && !string.IsNullOrEmpty((string)FileNameLabel.Content))
                     {
-                        RestRequest request = new RestRequest("api/Students/avarta", Method.Post);
+                        RestRequest request = new RestRequest("api/Students/avarta/{id}", Method.Post);
                         var selectedFileName = FileNameLabel.Content;
+                        request.AddUrlSegment("id", student.Id);
                         request.AddFile("avarta", (string)selectedFileName);
                         request.AddHeader("Content-Type", "multipart/form-data");
                         RestResponse response = await client.ExecuteAsync(request);
-
-
                     }
                     MessageBox.Show("Insert Successful!", "Message", MessageBoxButton.OK);
                 }
@@ -416,6 +418,16 @@ namespace AsyncClient
                 RestResponse restResponse = await client.ExecuteAsync(restRequest);
                 if (restResponse.IsSuccessful)
                 {
+                    // upload avarta to server
+                    if (null != ProfileImg.Source && !string.IsNullOrEmpty((string)FileNameLabel.Content))
+                    {
+                        RestRequest request = new RestRequest("api/Students/avarta/{id}", Method.Post);
+                        var selectedFileName = FileNameLabel.Content;
+                        request.AddUrlSegment("id", student.Id);
+                        request.AddFile("avarta", (string)selectedFileName);
+                        request.AddHeader("Content-Type", "multipart/form-data");
+                        RestResponse response = await client.ExecuteAsync(request);
+                    }
                     MessageBox.Show("Update Successful!", "Message", MessageBoxButton.OK);
                 }
                 else
@@ -488,5 +500,4 @@ namespace AsyncClient
             }
         }
     }
-
 }

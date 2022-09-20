@@ -4,12 +4,15 @@ using DatabaseServer;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.ServiceModel;
 using System.Web;
 using System.Web.Http;
+using System.Web.Routing;
 
 namespace BusinessWebAPI.Controllers
 {
@@ -133,13 +136,19 @@ namespace BusinessWebAPI.Controllers
             return Ok(student);
         }
 
+        [Route("api/Students/avarta/{Id}")]
         [HttpPost]
-        public IHttpActionResult avarta()
+        public IHttpActionResult avarta(int Id)
         {
-            Student student = null;
-            HttpRequest request = System.Web.HttpContext.Current.Request;
-            //HttpFileCollection FileCollect = request.Files;
-            HttpPostedFile file = System.Web.HttpContext.Current.Request.Files[0];
+            HttpPostedFile file = HttpContext.Current.Request.Files[0];
+            if (file.ContentLength > 0)
+            {
+                businessWebService.UploadAvarta(Id, file);
+            }
+            else
+            {
+                BadRequest();
+            }
             return Ok();
         }
     }

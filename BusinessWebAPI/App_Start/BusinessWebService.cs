@@ -66,5 +66,10 @@ namespace BusinessWebAPI.App_Start
         {
             return businessWebDAO.GetValuesForEntry(id);
         }
+
+        internal string UploadAvarta(int id, HttpPostedFile file)
+        {
+            return businessWebDAO.UploadAvarta(id, file);
+        }
     }
 }
