@@ -109,7 +109,7 @@ namespace BusinessWebAPI.App_Start
             Student student = null;
             RestClient client = new RestClient(URL);
             RestRequest request = new RestRequest("api/Students/search", Method.Get);
-            request.AddUrlSegment("searchText", searchText);
+            request.AddParameter("searchText", searchText);
             RestResponse response = client.Execute(request);
 
             if (response != null)

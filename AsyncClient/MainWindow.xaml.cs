@@ -69,6 +69,9 @@ namespace AsyncClient
             // Set SearchProgressBar as Indeterminate
             SearchProgressBar.IsIndeterminate = true;
 
+            string errorMsg = null;
+            Student student = null;
+            Bitmap avarta = null;
 
             // send http request to search
             SearchData mySearch = new SearchData(SearchBox.Text);
@@ -78,20 +81,20 @@ namespace AsyncClient
             restRequest.AddBody(mySearch);
             RestResponse restResponse = await client.ExecuteAsync(restRequest);
 
-            // Console.WriteLine(restResponse.Content);
-            Student student = JsonConvert.DeserializeObject<Student>(restResponse.Content);
-
-            if (student != null)
+            if (restResponse.IsSuccessful)
             {
-                restRequest = new RestRequest("api/profile", Method.Get);
-                restRequest.AddParameter("acctNo", student.Id);
-                byte[] bitmapdata = await client.DownloadDataAsync(restRequest);
-                using (var ms = new MemoryStream(bitmapdata))
+                student = JsonConvert.DeserializeObject<Student>(restResponse.Content);
+                
+                if (student != null && !string.IsNullOrEmpty(student.Avatar))
                 {
-                    //student.profile = new Bitmap(ms);
+                    avarta = getProfie(student.Avatar);
                 }
             }
-            UpdateGUI(student, null, null);
+            else if (restResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                MessageBox.Show("Search fail! NotFound!", "Message", MessageBoxButton.OK);
+            }
+            UpdateGUI(student, errorMsg, avarta);
 
 
             // Set TextBox SearchBox as editable
@@ -127,7 +130,7 @@ namespace AsyncClient
                     MessageBox.Show("Get fail!", "Error", MessageBoxButton.OK);
                 }
                 
-                if (restResponse.IsSuccessful && student != null)
+                if (restResponse.IsSuccessful && student != null && !string.IsNullOrEmpty(student.Avatar))
                 {
                     avarta = getProfie(student.Avatar);
                 }
@@ -326,7 +329,7 @@ namespace AsyncClient
             try
             {
                 string errorMsm = null;
-                // send http request to search
+                // send http request to delete
                 RestRequest restRequest = new RestRequest("api/student/{Id}", Method.Delete);
                 restRequest.AddUrlSegment("Id", AcctNoBox.Text);
                 RestResponse restResponse = await client.ExecuteAsync(restRequest);
@@ -404,7 +407,7 @@ namespace AsyncClient
             try
             {
                 string errorMsm = null;
-                // send http request to search
+                // send http request to update
                 RestRequest restRequest = new RestRequest("api/student/update", Method.Put);
                 restRequest.AddBody(student);
                 RestResponse restResponse = await client.ExecuteAsync(restRequest);
@@ -452,7 +455,7 @@ namespace AsyncClient
             try
             {
                 string errorMsm = null;
-                // send http request to search
+                // send http request to generate db
                 RestRequest restRequest = new RestRequest("api/GenerateDB", Method.Get);
                 RestResponse restResponse = await client.ExecuteAsync(restRequest);
                 if (restResponse.IsSuccessful)

@@ -25,7 +25,15 @@ namespace BusinessWebAPI.Controllers
         [HttpPost]
         public IHttpActionResult GetValuesForSearch(SearchData searchData)
         {
-            Student student = businessWebService.GetValuesForSearch(searchData.searchStr);
+            Student student = null;
+            try
+            {
+                student = businessWebService.GetValuesForSearch(searchData.searchStr);
+            }
+            catch (Exception e)
+            { 
+                return NotFound();
+            }
             return Ok(student);
         }
     }
