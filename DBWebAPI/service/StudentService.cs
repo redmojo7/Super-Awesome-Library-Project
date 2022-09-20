@@ -24,7 +24,7 @@ namespace DBWebAPI.service
                 string firstName = firstNameList[random.Next(firstNameList.Count)];
                 string lastName = lastNameList[random.Next(lastNameList.Count)];
                 int pin = random.Next(random.Next(1000));
-                int acctNum = (int)(100000 + i);
+                int acctNum = (int)(i);
                 int id = acctNum;
                 int balance = random.Next(2000, 10000);
                 string university = universityList[random.Next(universityList.Count)];
