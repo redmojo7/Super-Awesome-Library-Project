@@ -182,6 +182,20 @@ namespace AsyncClient
                     ProfileImg.Source = (avatar == null ? null : BmpImageFromBmp(avatar));
                 });
             }
+            else 
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    FNameBox.Text = "";
+                    LNameBox.Text = "";
+                    BalanceBox.Text = "";
+                    AcctNoBox.Text = "";
+                    PinBox.Text = "";
+                    ErrorMessageLable.Content = errorMessage;
+                    // Set the image source.
+                    ProfileImg.Source = (avatar == null ? null : BmpImageFromBmp(avatar));
+                });
+            }
         }
 
         /*
