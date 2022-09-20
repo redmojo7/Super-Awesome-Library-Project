@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.ServiceModel;
+using System.Web;
 using System.Web.Http;
 
 namespace BusinessWebAPI.Controllers
@@ -115,19 +116,6 @@ namespace BusinessWebAPI.Controllers
             try
             {
                 student = businessWebService.Get(Id);
-                /*
-                if (result != null)
-                {
-                    if (result == "NotFound")
-                    {
-                        return NotFound();
-                    }
-                    else if (result != "success")
-                    {
-                        return InternalServerError();
-                    }
-                }
-                */
             }
             catch (FaultException<ArgumentOutOfRangeException> oe)
             {
@@ -144,5 +132,17 @@ namespace BusinessWebAPI.Controllers
             }
             return Ok(student);
         }
+
+        [HttpPost]
+        public IHttpActionResult avarta()
+        {
+            Student student = null;
+            HttpRequest request = System.Web.HttpContext.Current.Request;
+            //HttpFileCollection FileCollect = request.Files;
+            HttpPostedFile file = System.Web.HttpContext.Current.Request.Files[0];
+            return Ok();
+        }
     }
+
+    
 }

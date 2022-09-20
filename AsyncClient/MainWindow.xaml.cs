@@ -287,10 +287,13 @@ namespace AsyncClient
                 {
                     if (null != ProfileImg.Source && !string.IsNullOrEmpty((string)FileNameLabel.Content))
                     {
-                        RestRequest request = new RestRequest("api/Students", Method.Post);
+                        RestRequest request = new RestRequest("api/Students/avarta", Method.Post);
                         var selectedFileName = FileNameLabel.Content;
+                        request.AddFile("avarta", (string)selectedFileName);
+                        request.AddHeader("Content-Type", "multipart/form-data");
+                        RestResponse response = await client.ExecuteAsync(request);
 
-                        request.AddFile("", (string)selectedFileName);
+
                     }
                     MessageBox.Show("Insert Successful!", "Message", MessageBoxButton.OK);
                 }
