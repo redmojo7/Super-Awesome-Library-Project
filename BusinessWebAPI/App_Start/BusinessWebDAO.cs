@@ -96,17 +96,35 @@ namespace BusinessWebAPI.App_Start
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
-                    throw new Exception(id + "was not found");
+                    throw new Exception(id + " was not found");
                 }
                 // not exist
             }
             return student;
         }
 
-        internal DataIntermed GetValuesForSearch(string searchStr)
+        internal Student GetValuesForSearch(string searchText)
         {
-            //throw new NotImplementedException();
-            return null;
+            
+            Student student = null;
+            RestClient client = new RestClient(URL);
+            RestRequest request = new RestRequest("api/Students/search", Method.Get);
+            request.AddUrlSegment("searchText", searchText);
+            RestResponse response = client.Execute(request);
+
+            if (response != null)
+            {
+                if (response.IsSuccessful)
+                {
+                    student = JsonConvert.DeserializeObject<Student>(response.Content);
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    throw new Exception(searchText + " was not found");
+                }
+                // not exist
+            }
+            return student;
         }
 
         internal string Insert(Student student)

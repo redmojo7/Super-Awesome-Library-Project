@@ -172,8 +172,8 @@ namespace DBWebAPI.Controllers
             if (path != null)
             {
 
-                string profileFullPath = Path.Combine(Directory.GetCurrentDirectory(), resourcesPath, path);
                 // Retrieve the profile image.
+                string profileFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, resourcesPath, path);
                 Bitmap profileBitmap = new Bitmap(profileFullPath);
 
                 Byte[] b;
@@ -192,6 +192,28 @@ namespace DBWebAPI.Controllers
             {
                 response = new HttpResponseMessage(HttpStatusCode.BadRequest);
                 return response;
+            }
+        }
+
+
+        [Route("api/Students/search")]
+        [HttpGet]
+        public IHttpActionResult search(string searchText)
+        {
+            if (searchText != null)
+            {
+                foreach (Student s in db.Students)
+                {
+                    if (s.FirstName.ToLower().Contains(searchText.ToLower()) || s.LastName.ToLower().Contains(searchText.ToLower()))
+                    {
+                        return Ok(s);
+                    }
+                }
+                return NotFound();
+            }
+            else
+            {
+                return BadRequest();
             }
         }
 

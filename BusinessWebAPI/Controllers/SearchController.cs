@@ -16,20 +16,16 @@ namespace BusinessWebAPI.Controllers
     public class SearchController : ApiController
     {
         private readonly BusinessWebService businessWebService;
-        private StudentServerInterface foob;
 
         public SearchController()
         {
             businessWebService = new BusinessWebService();
-            foob = new BusinessWebService().foob;
         }
 
         [HttpPost]
         public IHttpActionResult GetValuesForSearch(SearchData searchData)
         {
-            DataIntermed student = businessWebService.GetValuesForSearch(searchData.searchStr);
-
-            
+            Student student = businessWebService.GetValuesForSearch(searchData.searchStr);
             return Ok(student);
         }
     }

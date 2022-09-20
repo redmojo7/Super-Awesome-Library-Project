@@ -12,19 +12,11 @@ namespace BusinessWebAPI.App_Start
 {
     public class BusinessWebService
     {
-        public StudentServerInterface foob;
         public BusinessWebDAO businessWebDAO;
 
 
         public BusinessWebService()
         {
-            ChannelFactory<StudentServerInterface> foobFactory;
-            NetTcpBinding tcp = new NetTcpBinding();
-            //Set the URL and create the connection!
-            string URL = "net.tcp://localhost:8100/DatabaseServer";
-            foobFactory = new ChannelFactory<StudentServerInterface>(tcp, URL);
-            foob = foobFactory.CreateChannel();
-
             businessWebDAO = new BusinessWebDAO();
         }
 
@@ -42,7 +34,6 @@ namespace BusinessWebAPI.App_Start
         {
             string result = "";
             businessWebDAO.GenerateDB();
-
             return result;
         }
 
@@ -51,26 +42,9 @@ namespace BusinessWebAPI.App_Start
             return businessWebDAO.GetValuesForEntry(id);
         }
 
-        internal DataIntermed GetValuesForSearch(string searchStr)
+        internal Student GetValuesForSearch(string searchStr)
         {
-            DataIntermed s = businessWebDAO.GetValuesForSearch(searchStr);
-
-            DataIntermed student = null;
-            int numEntry = foob.GetNumEntries();
-            for (int index = 1; index <= numEntry; index++)
-            {
-                string firstName, lastName;
-                int balance;
-                uint acctNo, pin;
-                Bitmap profileBitmap;
-                foob.GetValuesForEntry(index, out acctNo, out pin, out balance, out firstName, out lastName, out profileBitmap);
-                if (firstName.ToLower().Contains(searchStr.ToLower()))
-                {
-                    student = new DataIntermed(pin, acctNo, firstName, lastName, balance, null);
-                    return student;
-                }
-            }
-            return student;
+            return businessWebDAO.GetValuesForSearch(searchStr);
         }
 
         internal string Insert(Student student)
