@@ -28,9 +28,9 @@ namespace BusinessWebAPI.App_Start
             businessWebDAO = new BusinessWebDAO();
         }
 
-        internal void Delete(uint acctNo)
+        internal string Delete(uint Id)
         {
-            throw new NotImplementedException();
+            return businessWebDAO.Delete(Id);
         }
 
         internal Bitmap getAvatar(uint acctNo)
@@ -62,16 +62,9 @@ namespace BusinessWebAPI.App_Start
             return result;
         }
 
-        internal DataIntermed GetValuesForEntry(int index)
+        internal Student GetValuesForEntry(int id)
         {
-            DataIntermed s = businessWebDAO.GetValuesForEntry(index);
-
-            uint acctNo = 0, pin = 0;
-            int balance = 0;
-            string firstName = null, lastName = null;
-            Bitmap profileBitmap = null;
-            foob.GetValuesForEntry(index, out acctNo, out pin, out balance, out firstName, out lastName, out profileBitmap);
-            return new DataIntermed(pin, acctNo, firstName, lastName, balance, null);
+            return businessWebDAO.GetValuesForEntry(id);
         }
 
         internal DataIntermed GetValuesForSearch(string searchStr)
@@ -96,19 +89,24 @@ namespace BusinessWebAPI.App_Start
             return student;
         }
 
-        internal void Insert(DataIntermed student)
+        internal string Insert(Student student)
         {
-            string result = businessWebDAO.Insert(student);
+            return businessWebDAO.Insert(student);
         }
 
-        internal void Update(DataIntermed student)
+        internal string Update(Student student)
         {
-            string result = businessWebDAO.Update(student);
+            return businessWebDAO.Update(student);
         }
 
         internal int GetNumEntries()
         {
             return businessWebDAO.GetNumEntries();
+        }
+
+        internal Student Get(int id)
+        {
+            return businessWebDAO.GetValuesForEntry(id);
         }
     }
 }

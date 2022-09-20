@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using BusinessWebAPI.CustomException;
 using System.Windows.Forms;
 using MessageBox = System.Windows.MessageBox;
+using BusinessWebAPI;
 
 namespace AsyncClient
 {
@@ -29,7 +30,7 @@ namespace AsyncClient
             // Set up the window
             InitializeComponent();  
             
-            string URL = "https://localhost:44324/";
+            string URL = "http://localhost:54863/";
             client = new RestClient(URL);
             RestRequest request = new RestRequest("api/entries", Method.Get); 
             RestResponse numOfThings = client.Execute(request);
@@ -78,19 +79,19 @@ namespace AsyncClient
             RestResponse restResponse = await client.ExecuteAsync(restRequest);
 
             // Console.WriteLine(restResponse.Content);
-            DataIntermed student = JsonConvert.DeserializeObject<DataIntermed>(restResponse.Content);
+            Student student = JsonConvert.DeserializeObject<Student>(restResponse.Content);
 
             if (student != null)
             {
                 restRequest = new RestRequest("api/profile", Method.Get);
-                restRequest.AddParameter("acctNo", student.acctNo);
+                restRequest.AddParameter("acctNo", student.Id);
                 byte[] bitmapdata = await client.DownloadDataAsync(restRequest);
                 using (var ms = new MemoryStream(bitmapdata))
                 {
-                    student.profile = new Bitmap(ms);
+                    //student.profile = new Bitmap(ms);
                 }
             }
-            UpdateGUI(student, null);
+            UpdateGUI(student, null, null);
 
 
             // Set TextBox SearchBox as editable
@@ -101,62 +102,75 @@ namespace AsyncClient
             SearchProgressBar.Dispatcher.Invoke(() => SearchProgressBar.IsIndeterminate = false);
         }
 
-        private void GoButton_Click(object sender, RoutedEventArgs routedEvent)
+        private async void GoButton_Click(object sender, RoutedEventArgs routedEvent)
         {
-            DataIntermed student = new DataIntermed();
+            Student student = new Student();
             try
             {
                 string errorMsm = null;
                 // send http request to search
-                RestRequest restRequest = new RestRequest("api/getValues", Method.Get);
-                restRequest.AddParameter("index", TotalNum.Text);
-                RestResponse restResponse = client.Execute(restRequest);
-                student = JsonConvert.DeserializeObject<DataIntermed>(restResponse.Content);
+                RestRequest restRequest = new RestRequest("api/student/Get/", Method.Get);
+                restRequest.AddParameter("Id", TotalNum.Text);
+                RestResponse restResponse = await client.ExecuteAsync(restRequest);
+                if (restResponse.IsSuccessful)
+                {
+                    student = JsonConvert.DeserializeObject<Student>(restResponse.Content);
+                }
+                else if (restResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    MessageBox.Show("Get fail! NotFound!", "Message", MessageBoxButton.OK);
+                }
+                else
+                {
+                    Console.WriteLine(restResponse.Content);
+                    MessageBox.Show("Get fail!", "Error", MessageBoxButton.OK);
+                }
+                
                 if (restResponse.IsSuccessful && student != null)
                 {
-                    student.profile = getProfie(student.acctNo);
+                    //student.profile = getProfie(student.acctNo);
                 }
                 else 
                 {
                     MessageResponse exception = JsonConvert.DeserializeObject<MessageResponse>(restResponse.Content);
                     errorMsm = exception.Message;
-                    student = new DataIntermed();
+                    student = new Student();
                 }
 
                 //And now, set the values in the GUI!
-                UpdateGUI(student, errorMsm);
+                UpdateGUI(student, errorMsm, null);
             }
             catch (FormatException fe)
             {
                 Console.WriteLine(fe.Message);
                 // Reset GUI
-                UpdateGUI(student, null);
+                UpdateGUI(student, null, null);
             }
             catch (FaultException<ArgumentOutOfRangeException> oe)
             {
                 Console.WriteLine(oe.Message);
                 // Reset GUI
-                UpdateGUI(student, null);
+                UpdateGUI(student, null, null);
             }
         }
 
         /*
         * UPDATE the Main Window (GUI)
         */
-        private void UpdateGUI(DataIntermed student, string errorMessage)
+        private void UpdateGUI(Student student, string errorMessage, Bitmap avatar)
         {
             if (student != null)
             {
                 this.Dispatcher.Invoke(() =>
                 {
-                    FNameBox.Text = student.firstName;
-                    LNameBox.Text = student.lastName;
-                    BalanceBox.Text = student.balance.ToString("C");
-                    AcctNoBox.Text = student.acctNo.ToString();
-                    PinBox.Text = student.pin.ToString("D4");
+                    FNameBox.Text = student.FirstName;
+                    LNameBox.Text = student.LastName;
+                    //BalanceBox.Text = student.Balance.ToString("C");
+                    AcctNoBox.Text = student.AcctNum.ToString();
+                    //PinBox.Text = student.Pin.ToString("D4");
                     ErrorMessageLable.Content = errorMessage;
                     // Set the image source.
-                    ProfileImg.Source = (student.profile == null ? null : BmpImageFromBmp(student.profile));
+                    ProfileImg.Source = (avatar == null ? null : BmpImageFromBmp(avatar));
                 });
             }
         }
@@ -257,8 +271,7 @@ namespace AsyncClient
             }
 
             //uint pin, uint acctNo, string firstName, string lastName, int balance, Bitmap profile
-            DataIntermed student = new DataIntermed(Convert.ToUInt32(PinBox.Text), 
-                Convert.ToUInt32(AcctNoBox.Text), FNameBox.Text, LNameBox.Text, Convert.ToInt32(BalanceBox.Text), null);
+            Student student = new Student(FNameBox.Text, LNameBox.Text, Convert.ToInt32(BalanceBox.Text), Convert.ToInt32(AcctNoBox.Text), Convert.ToInt32(PinBox.Text));
             try
             {
                 string errorMsm = null;
@@ -272,10 +285,15 @@ namespace AsyncClient
                     {
                         RestRequest request = new RestRequest("api/Students", Method.Post);
                         var selectedFileName = FileNameLabel.Content;
-                        
+
                         request.AddFile("", (string)selectedFileName);
                     }
                     MessageBox.Show("Insert Successful!", "Message", MessageBoxButton.OK);
+                }
+                else if (restResponse.StatusCode == System.Net.HttpStatusCode.Conflict) 
+                {
+                    Console.WriteLine(restResponse.Content);
+                    MessageBox.Show("Insert fail! Already exist!", "Error", MessageBoxButton.OK);
                 }
                 else
                 {
@@ -308,12 +326,16 @@ namespace AsyncClient
             {
                 string errorMsm = null;
                 // send http request to search
-                RestRequest restRequest = new RestRequest("api/Students/{id}", Method.Delete);
-                restRequest.AddUrlSegment("id", AcctNoBox.Text);
+                RestRequest restRequest = new RestRequest("api/student/{Id}", Method.Delete);
+                restRequest.AddUrlSegment("Id", AcctNoBox.Text);
                 RestResponse restResponse = await client.ExecuteAsync(restRequest);
                 if (restResponse.IsSuccessful)
                 {
                     MessageBox.Show("Delete Successful!", "Message", MessageBoxButton.OK);
+                }
+                else if (restResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    MessageBox.Show("Delete fail! NotFound!", "Message", MessageBoxButton.OK);
                 }
                 else
                 {

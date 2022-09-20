@@ -145,6 +145,10 @@
       <Project>{56C270AA-AACE-440E-8935-7CB80BF341C0}</Project>
       <Name>BusinessWebAPI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DatabaseWebAPI\DatabaseWebAPI.csproj">
+      <Project>{15010A79-206C-4067-B76B-BF40ED178E84}</Project>
+      <Name>DatabaseWebAPI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

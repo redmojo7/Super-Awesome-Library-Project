@@ -12,7 +12,7 @@ namespace BusinessWebAPI.App_Start
 {
     public class BusinessWebDAO
     {
-        string URL = "http://localhost:53923/";
+        string URL = "http://localhost:51491/";
 
         internal string GenerateDB()
         {
@@ -34,7 +34,7 @@ namespace BusinessWebAPI.App_Start
 
         internal int GetNumEntries()
         {
-            /*
+            
             RestClient client = new RestClient(URL);
             RestRequest request = new RestRequest("api/Students", Method.Get);
             RestResponse response = client.Execute(request);
@@ -42,18 +42,53 @@ namespace BusinessWebAPI.App_Start
             int num = 0;
             if (students != null)
                 num = students.Count;
-            */
-            return 100;
+            
+            return num;
         }
 
-        internal DataIntermed GetValuesForEntry(int index)
+        internal string Delete(uint acctNo)
         {
+            string result = "Error";
+            RestClient client = new RestClient(URL);
+            RestRequest request = new RestRequest("api/Students/{id}", Method.Delete);
+            request.AddUrlSegment("id", acctNo);
+            RestResponse response = client.Execute(request);
+            if (response != null)
+            {
+                if (response.IsSuccessful)
+                {
+                    result = "success";
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    result = "NotFound";
+                }
+                // not exist
+            }
+            return result;
+        }
+
+        internal Student GetValuesForEntry(int id)
+        {
+            Student student = null;
             RestClient client = new RestClient(URL);
             RestRequest request = new RestRequest("api/Students/{id}", Method.Get);
-            request.AddUrlSegment("id", index);
+            request.AddUrlSegment("id", id);
             RestResponse response = client.Execute(request);
-            Student student = JsonConvert.DeserializeObject<Student>(response.Content);
-            return new DataIntermed(Convert.ToUInt32(student.Pin), Convert.ToUInt32(student.AccountNumber), student.FirstName, student.LastName, Convert.ToInt32(student.Balance), null);
+            
+            if (response != null)
+            {
+                if (response.IsSuccessful)
+                {
+                    student = JsonConvert.DeserializeObject<Student>(response.Content);
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    throw new Exception(id + "was not found");
+                }
+                // not exist
+            }
+            return student;
         }
 
         internal DataIntermed GetValuesForSearch(string searchStr)
@@ -62,21 +97,36 @@ namespace BusinessWebAPI.App_Start
             return null;
         }
 
-        internal string Insert(DataIntermed student)
+        internal string Insert(Student student)
         {
+            string result = "Error";
             RestClient client = new RestClient(URL);
             RestRequest request = new RestRequest("api/Students", Method.Post);
-            request.AddBody(new Student(student.firstName, student.lastName, student.balance, student.pin, student.acctNo));
+            request.AddBody(student);
             RestResponse response = client.Execute(request);
-            return "";
+            if (response != null) {
+                if (response.IsSuccessful)
+                {
+                    result = "success";
+                }
+                if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
+                {
+                    result = "Conflict";
+                }
+            }
+            return result;
         }
 
-        internal string Update(DataIntermed student)
+        internal string Update(Student student)
         {
             RestClient client = new RestClient(URL);
             RestRequest request = new RestRequest("api/Students/{id}", Method.Put);
-            request.AddUrlSegment("id", student.acctNo);
-            request.AddBody(new Student(student.firstName, student.lastName, student.balance, student.pin, student.acctNo));
+            if (student.Id != null)
+            {
+                
+               request.AddUrlSegment("id", student.Id);
+            }
+            request.AddBody(student);
             RestResponse response = client.Execute(request);
             return "";
         }

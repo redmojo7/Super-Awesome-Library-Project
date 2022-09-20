@@ -7,21 +7,29 @@ namespace BusinessWebAPI
 {
     public partial class Student
     {
-        public Student(string firstName, string lastName, decimal? balance, decimal? accountNumber, decimal? pin)
+        public Student()
         {
+            //Id = null;
+        }
+
+        public Student(string firstName, string lastName, int balance, int acctNum, int pin)
+        {
+            //Id = null;
             FirstName = firstName;
             LastName = lastName;
             Balance = balance;
-            AccountNumber = accountNumber;
+            AcctNum = acctNum;
+            Id = acctNum;
             Pin = pin;
         }
 
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public Nullable<decimal> Balance { get; set; }
-        public Nullable<decimal> AccountNumber { get; set; }
-        public Nullable<decimal> Pin { get; set; }
+        public Nullable<int> Balance { get; set; }
+        public Nullable<int> AcctNum { get; set; }
+        public Nullable<int> Pin { get; set; }
         public string Avatar { get; set; }
+        public string University { get; set; }
     }
 }

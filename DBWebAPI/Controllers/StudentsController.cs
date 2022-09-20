@@ -74,10 +74,12 @@ namespace DBWebAPI.Controllers
         [ResponseType(typeof(Student))]
         public IHttpActionResult PostStudent(Student student)
         {
+            
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            
 
             db.Students.Add(student);
 

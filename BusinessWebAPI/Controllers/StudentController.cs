@@ -25,11 +25,21 @@ namespace BusinessWebAPI.Controllers
 
 
         [HttpPost]
-        public IHttpActionResult Insert(DataIntermed student)
+        public IHttpActionResult Insert(Student student)
         {
             try
             {
-                businessWebService.Insert(student);
+                string result = businessWebService.Insert(student);
+                if (result != null) {
+                    if (result == "Conflict")
+                    {
+                        return Conflict();
+                    }
+                    else if (result != "success")
+                    {
+                        return InternalServerError();
+                    }
+                }
             }
             catch (FaultException<ArgumentOutOfRangeException> oe)
             {
@@ -42,11 +52,22 @@ namespace BusinessWebAPI.Controllers
         }
 
         [HttpPut]
-        public IHttpActionResult Update(DataIntermed student)
+        public IHttpActionResult Update(Student student)
         {
             try
             {
-                businessWebService.Update(student);
+                string result = businessWebService.Update(student);
+                if (result != null)
+                {
+                    if (result == "NotFound")
+                    {
+                        return NotFound();
+                    }
+                    else if (result != "success")
+                    {
+                        return InternalServerError();
+                    }
+                }
             }
             catch (FaultException<ArgumentOutOfRangeException> oe)
             {
@@ -60,11 +81,22 @@ namespace BusinessWebAPI.Controllers
 
 
         [HttpDelete]
-        public IHttpActionResult Delete(uint AcctNo)
+        public IHttpActionResult Delete(uint Id)
         {
             try
             {
-                businessWebService.Delete(AcctNo);
+                string result = businessWebService.Delete(Id);
+                if (result != null)
+                {
+                    if (result == "NotFound")
+                    {
+                        return NotFound();
+                    }
+                    else if (result != "success")
+                    {
+                        return InternalServerError();
+                    }
+                }
             }
             catch (FaultException<ArgumentOutOfRangeException> oe)
             {
@@ -74,6 +106,43 @@ namespace BusinessWebAPI.Controllers
                     Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
             }
             return Ok();
+        }
+
+        [HttpGet]
+        public IHttpActionResult Get(int Id)
+        {
+            Student student = null;
+            try
+            {
+                student = businessWebService.Get(Id);
+                /*
+                if (result != null)
+                {
+                    if (result == "NotFound")
+                    {
+                        return NotFound();
+                    }
+                    else if (result != "success")
+                    {
+                        return InternalServerError();
+                    }
+                }
+                */
+            }
+            catch (FaultException<ArgumentOutOfRangeException> oe)
+            {
+                Console.WriteLine(oe.Message);
+                var message = string.Format("Parameter with index = {0} is out of range", 0);
+                throw new HttpResponseException( 
+                    Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
+            }
+            catch (Exception e)
+            {
+                var message = string.Format("Parameter with id = {0} was not found", Id);
+                throw new HttpResponseException(
+                    Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
+            }
+            return Ok(student);
         }
     }
 }

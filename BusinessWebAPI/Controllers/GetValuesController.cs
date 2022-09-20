@@ -29,7 +29,7 @@ namespace BusinessWebAPI.Controllers
         [HttpGet]
         public IHttpActionResult GetValuesForEntry(int index)
         {
-            DataIntermed student = null;
+            Student student = null;
             try
             {
                 student = businessWebService.GetValuesForEntry(index);
