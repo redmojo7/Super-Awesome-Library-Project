@@ -10,7 +10,7 @@ namespace DBWebAPI.service
     {
         // Instantiate random number generator using system-supplied value as seed.
         readonly Random random = new Random();
-        readonly public int RECORDS_NUMBER = 10000;
+        readonly public int RECORDS_NUMBER = 100;
         readonly List<string> firstNameList = new List<string> { "Latasha", "Ryan", "Heather", "Kevin", "Latasha", "Bryan", "Emily", "Whitney", "Matthew", "Amy" };
         readonly List<string> lastNameList = new List<string> { "Fields", "Sloan", "Hernandez", "Ruiz", "James", "Thompson", "Campbell", "Leach", "Sexton", "Heath" };
         readonly List<string> universityList = new List<string> { "Curtin University", "Harvard University", "Princeton University", "Columbia University", "Stanford University",

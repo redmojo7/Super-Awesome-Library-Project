@@ -14,6 +14,9 @@ namespace DBWebAPI.Models
     
     public partial class Student
     {
+        public Student()
+        {
+        }
 
         public Student(int id, string firstName, string lastName, int pin, int acctNum, int balance, string university, string avatar)
         {

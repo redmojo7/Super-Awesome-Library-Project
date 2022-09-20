@@ -27,12 +27,12 @@ namespace BusinessWebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<HttpResponseMessage> GetProfile(uint acctNo = 0)
+        public async Task<HttpResponseMessage> GetProfile(string path)
         {
             HttpResponseMessage response;
-            if (acctNo != 0)
+            if (path != null)
             {
-                Bitmap profileBitmap = businessWebService.getAvatar(acctNo);
+                Bitmap profileBitmap = businessWebService.getAvatar(path);
 
                 Byte[] b;
                 using (var stream = new MemoryStream())

@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web;
@@ -27,9 +29,19 @@ namespace BusinessWebAPI.App_Start
             return result;
         }
 
-        internal void GetAvatar(uint acctNo)
+        internal Bitmap GetAvatar(string path)
         {
-            //throw new NotImplementedException();
+            // send http request to search
+            Bitmap profile;
+            RestClient client = new RestClient(URL);
+            RestRequest restRequest = new RestRequest("api/Students/profile", Method.Get);
+            restRequest.AddParameter("path", path);
+            byte[] bitmapdata = client.DownloadData(restRequest);
+            using (var ms = new MemoryStream(bitmapdata))
+            {
+                profile = new Bitmap(ms);
+            }
+            return profile;
         }
 
         internal int GetNumEntries()

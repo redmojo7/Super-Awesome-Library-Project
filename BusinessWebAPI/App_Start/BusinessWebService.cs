@@ -33,25 +33,9 @@ namespace BusinessWebAPI.App_Start
             return businessWebDAO.Delete(Id);
         }
 
-        internal Bitmap getAvatar(uint acctNo)
+        internal Bitmap getAvatar(string path)
         {
-            businessWebDAO.GetAvatar(acctNo);
-            // do searrching
-            Bitmap profileBitmap = null;
-            int numEntry = foob.GetNumEntries();
-            for (int index = 1; index <= numEntry; index++)
-            {
-                string firstName, lastName;
-                int balance;
-                uint acct, pin;
-
-                foob.GetValuesForEntry(index, out acct, out pin, out balance, out firstName, out lastName, out profileBitmap);
-                if (acct == acctNo)
-                {
-                    break;
-                }
-            }
-            return profileBitmap;
+            return businessWebDAO.GetAvatar(path);
         }
 
         internal string GenerateDB()

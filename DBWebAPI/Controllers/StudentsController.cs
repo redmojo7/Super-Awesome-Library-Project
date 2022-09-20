@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using DBWebAPI.Models;
@@ -17,6 +20,7 @@ namespace DBWebAPI.Controllers
     {
         private studentdbEntities db = new studentdbEntities();
         private StudentService studentService;
+        private const string resourcesPath = "Resources";
 
         public StudentsController()
         {
@@ -129,8 +133,18 @@ namespace DBWebAPI.Controllers
         [HttpGet]
         public IHttpActionResult GenerateDB()
         {
+            try
+            {
+                db.Students.RemoveRange(db.Students);
+                db.SaveChanges();
+            }
+            catch (DbUpdateException)
+            {
+                throw;
+            }
+
             List<Student> students = studentService.GenerateDB();
-            /*
+            
             foreach (Student stu in students)
             {
                 // add Student to DB
@@ -147,9 +161,38 @@ namespace DBWebAPI.Controllers
             {
                throw;
             }
-            */
-
             return Ok();
+        }
+
+        [Route("api/Students/profile")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetProfile(string path)
+        {
+            HttpResponseMessage response;
+            if (path != null)
+            {
+
+                string profileFullPath = Path.Combine(Directory.GetCurrentDirectory(), resourcesPath, path);
+                // Retrieve the profile image.
+                Bitmap profileBitmap = new Bitmap(profileFullPath);
+
+                Byte[] b;
+                using (var stream = new MemoryStream())
+                {
+                    profileBitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                    b = stream.ToArray();
+                }
+                response = new HttpResponseMessage();
+                response.Content = new ByteArrayContent(b);
+                response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+                response.StatusCode = System.Net.HttpStatusCode.OK;
+                return response;
+            }
+            else
+            {
+                response = new HttpResponseMessage(HttpStatusCode.BadRequest);
+                return response;
+            }
         }
 
         protected override void Dispose(bool disposing)

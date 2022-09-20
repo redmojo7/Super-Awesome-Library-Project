@@ -105,6 +105,7 @@ namespace AsyncClient
         private async void GoButton_Click(object sender, RoutedEventArgs routedEvent)
         {
             Student student = new Student();
+            Bitmap avarta = null;
             try
             {
                 string errorMsm = null;
@@ -128,7 +129,7 @@ namespace AsyncClient
                 
                 if (restResponse.IsSuccessful && student != null)
                 {
-                    //student.profile = getProfie(student.acctNo);
+                    avarta = getProfie(student.Avatar);
                 }
                 else 
                 {
@@ -138,7 +139,7 @@ namespace AsyncClient
                 }
 
                 //And now, set the values in the GUI!
-                UpdateGUI(student, errorMsm, null);
+                UpdateGUI(student, errorMsm, avarta);
             }
             catch (FormatException fe)
             {
@@ -165,9 +166,9 @@ namespace AsyncClient
                 {
                     FNameBox.Text = student.FirstName;
                     LNameBox.Text = student.LastName;
-                    //BalanceBox.Text = student.Balance.ToString("C");
+                    BalanceBox.Text = student.Balance.ToString();
                     AcctNoBox.Text = student.AcctNum.ToString();
-                    //PinBox.Text = student.Pin.ToString("D4");
+                    PinBox.Text = student.Pin.ToString();
                     ErrorMessageLable.Content = errorMessage;
                     // Set the image source.
                     ProfileImg.Source = (avatar == null ? null : BmpImageFromBmp(avatar));
@@ -204,12 +205,12 @@ namespace AsyncClient
         /*
          * 
          */
-        private Bitmap getProfie(uint acctNo) 
+        private Bitmap getProfie(string path) 
         {
             // send http request to search
             Bitmap profile;
             RestRequest restRequest = new RestRequest("api/profile", Method.Get);
-            restRequest.AddParameter("acctNo", acctNo);
+            restRequest.AddParameter("path", path);
             byte[] bitmapdata = client.DownloadData(restRequest);
             using (var ms = new MemoryStream(bitmapdata))
             {
@@ -457,6 +458,13 @@ namespace AsyncClient
                 if (restResponse.IsSuccessful)
                 {
                     MessageBox.Show("GenerateDB Successful!", "Message", MessageBoxButton.OK);
+                    // update TotalNum
+                    string URL = "http://localhost:54863/";
+                    client = new RestClient(URL);
+                    RestRequest request = new RestRequest("api/entries", Method.Get);
+                    RestResponse numOfThings = client.Execute(request);
+                    // Also, tell me how many entries are in the DB.
+                    TotalNum.Text = numOfThings.Content;
                 }
                 else
                 {
