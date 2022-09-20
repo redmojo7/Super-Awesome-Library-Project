@@ -9,12 +9,19 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using DBWebAPI.Models;
+using DBWebAPI.service;
 
 namespace DBWebAPI.Controllers
 {
     public class StudentsController : ApiController
     {
         private studentdbEntities db = new studentdbEntities();
+        private StudentService studentService;
+
+        public StudentsController()
+        {
+            studentService = new StudentService();
+        }
 
         // GET: api/Students
         public IQueryable<Student> GetStudents()
@@ -116,6 +123,33 @@ namespace DBWebAPI.Controllers
             db.SaveChanges();
 
             return Ok(student);
+        }
+
+        [Route("api/Students/GenerateDB")]
+        [HttpGet]
+        public IHttpActionResult GenerateDB()
+        {
+            List<Student> students = studentService.GenerateDB();
+            /*
+            foreach (Student stu in students)
+            {
+                // add Student to DB
+                db.Students.Add(stu);
+            }
+
+            // SaveChanges to DB
+            
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateException)
+            {
+               throw;
+            }
+            */
+
+            return Ok();
         }
 
         protected override void Dispose(bool disposing)

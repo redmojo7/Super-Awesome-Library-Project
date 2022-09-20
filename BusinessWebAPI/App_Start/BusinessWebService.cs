@@ -57,7 +57,7 @@ namespace BusinessWebAPI.App_Start
         internal string GenerateDB()
         {
             string result = "";
-            //total = businessWebDAO.GenerateDB();
+            businessWebDAO.GenerateDB();
 
             return result;
         }

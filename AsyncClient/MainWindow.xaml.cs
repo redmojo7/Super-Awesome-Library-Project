@@ -399,8 +399,7 @@ namespace AsyncClient
             }
 
             //uint pin, uint acctNo, string firstName, string lastName, int balance, Bitmap profile
-            DataIntermed student = new DataIntermed(Convert.ToUInt32(PinBox.Text),
-                Convert.ToUInt32(AcctNoBox.Text), FNameBox.Text, LNameBox.Text, Convert.ToInt32(BalanceBox.Text), null);
+            Student student = new Student(FNameBox.Text, LNameBox.Text, Convert.ToInt32(BalanceBox.Text), Convert.ToInt32(AcctNoBox.Text), Convert.ToInt32(PinBox.Text));
             try
             {
                 string errorMsm = null;
