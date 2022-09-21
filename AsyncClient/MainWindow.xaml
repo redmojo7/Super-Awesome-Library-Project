@@ -20,6 +20,7 @@
         <!-- A Canvas contains a collection of UIElement objects, which are in the Children property. -->
         <Grid Name="ProfileCanvas" Margin="140,80,0,0" Width="100" Height="100" VerticalAlignment="Top" HorizontalAlignment="Left" >
             <Image Name="ProfileImg"/>
+            <TextBlock x:Name="SearchingTitleBlock" HorizontalAlignment = "Left" Margin = "374,310,0,0" TextWrapping="Wrap" Text = "Searching" VerticalAlignment="Top" Width="90" />
         </Grid>
         <TextBox x:Name="FNameBox" HorizontalAlignment="Left" Height="27" Margin="297,61,0,0" TextWrapping="Wrap" Text="First Name" VerticalAlignment="Top" Width="200"/>
         <TextBox x:Name="LNameBox" HorizontalAlignment="Left" Height="27" Margin="297,96,0,0" TextWrapping="Wrap" Text="Last Name" VerticalAlignment="Top" Width="200"/>

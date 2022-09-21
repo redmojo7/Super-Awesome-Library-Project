@@ -12,7 +12,7 @@ namespace BusinessWebAPI
             //Id = null;
         }
 
-        public Student(string firstName, string lastName, int balance, int acctNum, int pin)
+        public Student(string firstName, string lastName, int balance, int acctNum, int pin, string avatar)
         {
             //Id = null;
             FirstName = firstName;
@@ -21,6 +21,7 @@ namespace BusinessWebAPI
             AcctNum = acctNum;
             Id = acctNum;
             Pin = pin;
+            Avatar = avatar;
         }
 
         public int Id { get; set; }

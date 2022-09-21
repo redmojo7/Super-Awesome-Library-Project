@@ -177,6 +177,7 @@ namespace AsyncClient
                     BalanceBox.Text = student.Balance.ToString();
                     AcctNoBox.Text = student.AcctNum.ToString();
                     PinBox.Text = student.Pin.ToString();
+                    ImageTitleBlock.Text = student.Avatar;
                     ErrorMessageLable.Content = errorMessage;
                     // Set the image source.
                     ProfileImg.Source = (avatar == null ? null : BmpImageFromBmp(avatar));
@@ -191,6 +192,7 @@ namespace AsyncClient
                     BalanceBox.Text = "";
                     AcctNoBox.Text = "";
                     PinBox.Text = "";
+                    ImageTitleBlock.Text = "";
                     ErrorMessageLable.Content = errorMessage;
                     // Set the image source.
                     ProfileImg.Source = (avatar == null ? null : BmpImageFromBmp(avatar));
@@ -294,7 +296,8 @@ namespace AsyncClient
             }
 
             //uint pin, uint acctNo, string firstName, string lastName, int balance, Bitmap profile
-            Student student = new Student(FNameBox.Text, LNameBox.Text, Convert.ToInt32(BalanceBox.Text), Convert.ToInt32(AcctNoBox.Text), Convert.ToInt32(PinBox.Text));
+            Student student = new Student(FNameBox.Text, LNameBox.Text, Convert.ToInt32(BalanceBox.Text), 
+                Convert.ToInt32(AcctNoBox.Text), Convert.ToInt32(PinBox.Text), ImageTitleBlock.Text);
             try
             {
                 string errorMsm = null;
@@ -425,7 +428,8 @@ namespace AsyncClient
             }
 
             //uint pin, uint acctNo, string firstName, string lastName, int balance, Bitmap profile
-            Student student = new Student(FNameBox.Text, LNameBox.Text, Convert.ToInt32(BalanceBox.Text), Convert.ToInt32(AcctNoBox.Text), Convert.ToInt32(PinBox.Text));
+            Student student = new Student(FNameBox.Text, LNameBox.Text, Convert.ToInt32(BalanceBox.Text), 
+                Convert.ToInt32(AcctNoBox.Text), Convert.ToInt32(PinBox.Text), ImageTitleBlock.Text);
             try
             {
                 string errorMsm = null;

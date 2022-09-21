@@ -16,7 +16,8 @@ namespace BusinessWebAPI.App_Start
 {
     public class BusinessWebDAO
     {
-        string URL = "http://localhost:51491/";
+        //string URL = "http://localhost:51491/";
+        string URL = "http://jump.ddsay.com:51491";
 
         internal string GenerateDB()
         {
