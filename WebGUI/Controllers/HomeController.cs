@@ -11,7 +11,7 @@ namespace WebGUI.Controllers
         {
             ViewBag.Title = "Home";
 
-            RestClient restClient = new RestClient("http://localhost:62273/");
+            RestClient restClient = new RestClient("http://localhost:54863/");
             RestRequest restRequest = new RestRequest("api/students/", Method.Get);
             RestResponse restResponse = restClient.Execute(restRequest);
 

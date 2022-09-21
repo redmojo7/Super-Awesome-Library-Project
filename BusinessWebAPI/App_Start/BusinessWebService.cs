@@ -71,5 +71,10 @@ namespace BusinessWebAPI.App_Start
         {
             return businessWebDAO.UploadAvarta(id, file);
         }
+
+        internal List<Student> All()
+        {
+            return businessWebDAO.All();
+        }
     }
 }
