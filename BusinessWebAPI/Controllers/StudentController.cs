@@ -45,12 +45,10 @@ namespace BusinessWebAPI.Controllers
                     }
                 }
             }
-            catch (FaultException<ArgumentOutOfRangeException> oe)
+            catch (Exception oe)
             {
                 Console.WriteLine(oe.Message);
-                var message = string.Format("Parameter with index = {0} is out of range", 0);
-                throw new HttpResponseException(
-                    Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
+                return InternalServerError();
             }
             return Ok();
         }
@@ -73,12 +71,10 @@ namespace BusinessWebAPI.Controllers
                     }
                 }
             }
-            catch (FaultException<ArgumentOutOfRangeException> oe)
+            catch (Exception oe)
             {
                 Console.WriteLine(oe.Message);
-                var message = string.Format("Parameter with index = {0} is out of range", 0);
-                throw new HttpResponseException(
-                    Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
+                return InternalServerError();
             }
             return Ok();
         }
@@ -102,12 +98,10 @@ namespace BusinessWebAPI.Controllers
                     }
                 }
             }
-            catch (FaultException<ArgumentOutOfRangeException> oe)
+            catch (Exception oe)
             {
                 Console.WriteLine(oe.Message);
-                var message = string.Format("Parameter with index = {0} is out of range", 0);
-                throw new HttpResponseException(
-                    Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
+                return InternalServerError();
             }
             return Ok();
         }
@@ -123,13 +117,13 @@ namespace BusinessWebAPI.Controllers
             catch (FaultException<ArgumentOutOfRangeException> oe)
             {
                 Console.WriteLine(oe.Message);
-                var message = string.Format("Parameter with index = {0} is out of range", 0);
+                var message = string.Format("Student with index = {0} is out of range", 0);
                 throw new HttpResponseException( 
                     Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
             }
             catch (Exception e)
             {
-                var message = string.Format("Parameter with id = {0} was not found", Id);
+                var message = string.Format("Student with id = {0} was not found", Id);
                 throw new HttpResponseException(
                     Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
             }
@@ -152,6 +146,4 @@ namespace BusinessWebAPI.Controllers
             return Ok();
         }
     }
-
-    
 }

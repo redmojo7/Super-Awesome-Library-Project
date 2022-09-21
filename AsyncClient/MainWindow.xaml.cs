@@ -109,6 +109,17 @@ namespace AsyncClient
 
         private async void GoButton_Click(object sender, RoutedEventArgs routedEvent)
         {
+            //check
+            // Checking seaching key
+            // ensures no TextBoxes are empty
+            uint index;
+            if (string.IsNullOrEmpty(TotalNum.Text) || !uint.TryParse(TotalNum.Text, out index))
+            {
+                // display popup box
+                MessageBox.Show("Please put a valid index.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                TotalNum.Focus(); // set focus to TotalNum
+                return;
+            }
             Student student = new Student();
             Bitmap avarta = null;
             try
@@ -487,6 +498,7 @@ namespace AsyncClient
                 {
                     string selectedFileName = dlg.FileName;
                     FileNameLabel.Content = selectedFileName;
+                    ImageTitleBlock.Text = "";
                     BitmapImage bitmap = new BitmapImage();
                     bitmap.BeginInit();
                     bitmap.UriSource = new Uri(selectedFileName);
