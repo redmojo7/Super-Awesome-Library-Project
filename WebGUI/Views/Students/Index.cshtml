@@ -1,0 +1,160 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div id="studentForm">
+    <table>
+        <tr>
+            <td>
+                <form>
+                    <input type="text" id="Id" name="Id" placeholder="Student ID" />
+                    <input type="text" id="FirstName" name="FirstName" placeholder="First Name" />
+                    <input type="text" id="LastName" name="LastName" placeholder="Last Name" />
+                    <input type="text" id="Pin" name="Pin" placeholder="Pin" />
+                    <input type="text" id="Balance" name="Balance" placeholder="Balance" />
+                    <input type="text" id="University" name="University" placeholder="Student University" />
+                </form>
+            </td>
+            <td>
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <label>Avatar</label>
+                    <input id="file" type="file" name="file" />
+                    <button id="upload" type="button" onclick="upload_avatar()">Upload Avata</button>
+                </form>
+            </td>
+            <td>
+                <button id="search" onclick="search()">Search</button>
+                <button id="insert" onclick="insert()">Insert</button>
+                <button id="deleteStu" onclick="deleteStu()">Delete</button>
+                <button id="update" onclick="update()">Update</button>
+                <button id="generate_DB" onclick="generate_DB()">Generating a database</button>
+            </td>
+        </tr>
+    </table>
+
+</div>
+<script>
+    function search() {
+        $.ajax({
+            url: '/students/search/' + $('#Id').val(),
+            type: 'get',
+            contentType: 'application/json',
+            processData: false,
+            success: function (data, textStatus, jQxhr) {
+                var obj = JSON.parse(data);
+                $("#SName").val(obj.Name);
+                $("#SUni").val(obj.University);
+            },
+            error: function (jqXhr, textStatus, errorThrown) {
+                console.log(errorThrown);
+            }
+        });
+    }
+
+    function insert() {
+        $.ajax({
+            type: 'POST',
+            url: '/students/insert/',
+            contentType: 'application/json',
+            data: JSON.stringify(
+                {
+                    "Id": $('#Id').val(),
+                    "Pin": $("#Pin").val(),
+                    "Balance": $("#Balance").val(),
+                    "FirstName": $("#FirstName").val(),
+                    "LastName": $("#LastName").val()
+                }),
+            success: function (data, textStatus, jQxhr) {
+                alert("Data Inserted");
+            },
+            error: function (xhr, textStatus, error) {
+                alert("Error");
+                console.log(xhr.statusText);
+                console.log(textStatus);
+                console.log(error);
+            }
+        });
+    }
+
+    function deleteStu() {
+        $.ajax({
+            url: '/students/delete/' + $('#Id').val(),
+            type: 'delete',
+            contentType: 'application/json',
+            processData: false,
+            success: function (data, textStatus, jQxhr) {
+                alert("Data Dleted");
+            },
+            error: function (jqXhr, textStatus, errorThrown) {
+                alert("Error");
+                console.log(xhr.statusText);
+                console.log(textStatus);
+                console.log(error);
+            }
+        });
+    }
+
+    function update() {
+        $.ajax({
+            type: 'PUT',
+            url: '/students/update/',
+            contentType: 'application/json',
+            data: JSON.stringify(
+                {
+                    "Id": $('#Id').val(),
+                    "acctNo": $("#acctNo").val(),
+                    "Pin": $("#Pin").val(),
+                    "Balance": $("#Balance").val(),
+                    "FirstName": $("#FirstName").val(),
+                    "LastName": $("#LastName").val()
+                }),
+            success: function (data, textStatus, jQxhr) {
+                alert("Data Updated");
+            },
+            error: function (xhr, textStatus, error) {
+                alert("Error");
+                console.log(xhr.statusText);
+                console.log(textStatus);
+                console.log(error);
+            }
+        });
+    }
+
+    function generate_DB() {
+        $.ajax({
+            type: 'GET',
+            url: '/students/generateDB/',
+            success: function (data, textStatus, jQxhr) {
+                alert("DB generated");
+            },
+            error: function (xhr, textStatus, error) {
+                alert("Error");
+                console.log(xhr.statusText);
+                console.log(textStatus);
+                console.log(error);
+            }
+        });
+    }
+
+    function upload_avatar() {
+        var formData = new FormData();
+        formData.append("file", $("#file")[0].files[0]);
+        $.ajax({
+            url: '/students/UploadFiles',
+            type: 'post',
+            data: formData,
+            processData: false,
+            contentType: false
+                dataType: 'text',
+            success: function (data) {
+                var params = JSON.parse(data)
+                $("#img").attr("src", params);
+            },
+            error: function (data) {
+
+            }
+        });
+    }
+
+</script>
