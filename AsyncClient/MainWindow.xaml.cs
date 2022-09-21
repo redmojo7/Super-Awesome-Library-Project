@@ -168,6 +168,7 @@ namespace AsyncClient
         */
         private void UpdateGUI(Student student, string errorMessage, Bitmap avatar)
         {
+            FileNameLabel.Content = "";
             if (student != null)
             {
                 this.Dispatcher.Invoke(() =>
@@ -193,6 +194,7 @@ namespace AsyncClient
                     AcctNoBox.Text = "";
                     PinBox.Text = "";
                     ImageTitleBlock.Text = "";
+                    
                     ErrorMessageLable.Content = errorMessage;
                     // Set the image source.
                     ProfileImg.Source = (avatar == null ? null : BmpImageFromBmp(avatar));
