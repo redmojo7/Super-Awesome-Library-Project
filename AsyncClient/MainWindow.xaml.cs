@@ -364,7 +364,7 @@ namespace AsyncClient
                 {
                     MessageBox.Show("Delete Successful!", "Message", MessageBoxButton.OK);
                     // reset FileNameLabel
-                    FileNameLabel.Content = "";
+                    UpdateGUI(null, null, null);
                 }
                 else if (restResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
@@ -479,17 +479,25 @@ namespace AsyncClient
             dlg.InitialDirectory = "c:\\";
             dlg.Filter = "Image files (*.jpg)|*.jpg|All Files (*.*)|*.*";
             dlg.RestoreDirectory = true;
-
-            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            try
             {
-                string selectedFileName = dlg.FileName;
-                FileNameLabel.Content = selectedFileName;
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.UriSource = new Uri(selectedFileName);
-                bitmap.EndInit();
-                ProfileImg.Source = bitmap;
+                if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    string selectedFileName = dlg.FileName;
+                    FileNameLabel.Content = selectedFileName;
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.UriSource = new Uri(selectedFileName);
+                    bitmap.EndInit();
+                    ProfileImg.Source = bitmap;
+                }
             }
+            catch (Exception)
+            {
+                MessageBox.Show("Wrong File type try upload images", "Error", MessageBoxButton.OK);
+                ProfileImg.Source = null;
+            }
+        
         }
 
         private async void GenerateDBButton_Click(object sender, RoutedEventArgs e)
