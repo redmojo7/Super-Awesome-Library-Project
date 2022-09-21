@@ -318,6 +318,8 @@ namespace AsyncClient
                         RestResponse response = await client.ExecuteAsync(request);
                     }
                     MessageBox.Show("Insert Successful!", "Message", MessageBoxButton.OK);
+                    // reset FileNameLabel
+                    FileNameLabel.Content = "";
                 }
                 else if (restResponse.StatusCode == System.Net.HttpStatusCode.Conflict) 
                 {
@@ -361,6 +363,8 @@ namespace AsyncClient
                 if (restResponse.IsSuccessful)
                 {
                     MessageBox.Show("Delete Successful!", "Message", MessageBoxButton.OK);
+                    // reset FileNameLabel
+                    FileNameLabel.Content = "";
                 }
                 else if (restResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
@@ -450,6 +454,8 @@ namespace AsyncClient
                         RestResponse response = await client.ExecuteAsync(request);
                     }
                     MessageBox.Show("Update Successful!", "Message", MessageBoxButton.OK);
+                    // reset FileNameLabel
+                    FileNameLabel.Content = "";
                 }
                 else
                 {
@@ -519,6 +525,7 @@ namespace AsyncClient
             {
                 Console.WriteLine(oe.Message);
             }
+            UpdateGUI(null, null, null);
         }
     }
 }
