@@ -130,6 +130,23 @@ namespace BusinessWebAPI.Controllers
             return Ok(student);
         }
 
+        [Route("api/Students/all")]
+        [HttpGet]
+        public IHttpActionResult All()
+        {
+            List<Student> students = null;
+            try
+            {
+                students = businessWebService.All();
+            }
+            catch (Exception oe)
+            {
+                Console.WriteLine(oe.Message);
+                return InternalServerError();
+            }
+            return Json(students);
+        }
+
         [Route("api/Students/avarta/{id}")]
         [HttpPost]
         public IHttpActionResult avarta(int id)

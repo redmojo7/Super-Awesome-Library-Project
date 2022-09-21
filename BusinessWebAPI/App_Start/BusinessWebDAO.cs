@@ -49,16 +49,20 @@ namespace BusinessWebAPI.App_Start
 
         internal int GetNumEntries()
         {
-            
+            List<Student> students = All();
+            int num = 0;
+            if (students != null)
+                num = students.Count;
+            return num;
+        }
+
+        internal List<Student> All()
+        {
             RestClient client = new RestClient(URL);
             RestRequest request = new RestRequest("api/Students", Method.Get);
             RestResponse response = client.Execute(request);
             List<Student> students = JsonConvert.DeserializeObject<List<Student>>(response.Content);
-            int num = 0;
-            if (students != null)
-                num = students.Count;
-            
-            return num;
+            return students;
         }
 
         internal string Delete(uint acctNo)
