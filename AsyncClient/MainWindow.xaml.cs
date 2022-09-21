@@ -127,7 +127,7 @@ namespace AsyncClient
                 string errorMsm = null;
                 // send http request to search
                 RestRequest restRequest = new RestRequest("api/student/Get", Method.Get);
-                restRequest.AddParameter("Id", TotalNum.Text);
+                restRequest.AddParameter("id", TotalNum.Text);
                 RestResponse restResponse = await client.ExecuteAsync(restRequest);
                 if (restResponse.IsSuccessful)
                 {
@@ -370,8 +370,8 @@ namespace AsyncClient
             {
                 string errorMsm = null;
                 // send http request to delete
-                RestRequest restRequest = new RestRequest("api/student/{Id}", Method.Delete);
-                restRequest.AddUrlSegment("Id", AcctNoBox.Text);
+                RestRequest restRequest = new RestRequest("api/student/{id}", Method.Delete);
+                restRequest.AddUrlSegment("id", AcctNoBox.Text);
                 RestResponse restResponse = await client.ExecuteAsync(restRequest);
                 if (restResponse.IsSuccessful)
                 {

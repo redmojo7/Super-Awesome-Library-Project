@@ -81,11 +81,11 @@ namespace BusinessWebAPI.Controllers
 
 
         [HttpDelete]
-        public IHttpActionResult Delete(uint Id)
+        public IHttpActionResult Delete(uint id)
         {
             try
             {
-                string result = businessWebService.Delete(Id);
+                string result = businessWebService.Delete(id);
                 if (result != null)
                 {
                     if (result == "NotFound")
@@ -107,12 +107,12 @@ namespace BusinessWebAPI.Controllers
         }
 
         [HttpGet]
-        public IHttpActionResult Get(int Id)
+        public IHttpActionResult Get(int id)
         {
             Student student = null;
             try
             {
-                student = businessWebService.Get(Id);
+                student = businessWebService.Get(id);
             }
             catch (FaultException<ArgumentOutOfRangeException> oe)
             {
@@ -123,7 +123,7 @@ namespace BusinessWebAPI.Controllers
             }
             catch (Exception e)
             {
-                var message = string.Format("Student with id = {0} was not found", Id);
+                var message = string.Format("Student with id = {0} was not found", id);
                 throw new HttpResponseException(
                     Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
             }

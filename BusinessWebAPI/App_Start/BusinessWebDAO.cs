@@ -65,12 +65,12 @@ namespace BusinessWebAPI.App_Start
             return students;
         }
 
-        internal string Delete(uint acctNo)
+        internal string Delete(uint id)
         {
             string result = "Error";
             RestClient client = new RestClient(URL);
             RestRequest request = new RestRequest("api/Students/{id}", Method.Delete);
-            request.AddUrlSegment("id", acctNo);
+            request.AddUrlSegment("id", id);
             RestResponse response = client.Execute(request);
             if (response != null)
             {

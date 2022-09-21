@@ -12,7 +12,7 @@ using System.Web.Http;
 
 namespace BusinessWebAPI.Controllers
 {
-    [Route("api/Searching")]
+    
     public class SearchController : ApiController
     {
         private readonly BusinessWebService businessWebService;
@@ -22,6 +22,7 @@ namespace BusinessWebAPI.Controllers
             businessWebService = new BusinessWebService();
         }
 
+        [Route("api/Searching")]
         [HttpPost]
         public IHttpActionResult GetValuesForSearch(SearchData searchData)
         {
@@ -32,6 +33,22 @@ namespace BusinessWebAPI.Controllers
             }
             catch (Exception e)
             { 
+                return NotFound();
+            }
+            return Ok(student);
+        }
+
+        [Route("api/search")]
+        [HttpGet]
+        public IHttpActionResult GetValuesForSearch(string searchText)
+        {
+            Student student = null;
+            try
+            {
+                student = businessWebService.GetValuesForSearch(searchText);
+            }
+            catch (Exception e)
+            {
                 return NotFound();
             }
             return Ok(student);

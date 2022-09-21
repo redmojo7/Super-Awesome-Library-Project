@@ -15,7 +15,7 @@ namespace WebGUI.Controllers
             RestRequest restRequest = new RestRequest("api/students/", Method.Get);
             RestResponse restResponse = restClient.Execute(restRequest);
 
-            List<Student> students = JsonConvert.DeserializeObject<List<Student>>(restResponse.Content);
+            List<Student> students = new List<Student>();//JsonConvert.DeserializeObject<List<Student>>(restResponse.Content);
             return View(students);
         }
     }

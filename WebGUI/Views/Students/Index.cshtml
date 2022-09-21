@@ -43,11 +43,17 @@
             processData: false,
             success: function (data, textStatus, jQxhr) {
                 var obj = JSON.parse(data);
-                $("#SName").val(obj.Name);
-                $("#SUni").val(obj.University);
+                $("#FirstName").val(obj.FirstName);
+                $("#LastName").val(obj.LastName);
+                $("#Pin").val(obj.Pin);
+                $("#Balance").val(obj.Balance);
+                $("#University").val(obj.University);
             },
-            error: function (jqXhr, textStatus, errorThrown) {
-                console.log(errorThrown);
+            error: function (xhr, textStatus, error) {
+                alert("Error");
+                console.log(xhr.statusText);
+                console.log(textStatus);
+                console.log(error);
             }
         });
     }
@@ -60,10 +66,12 @@
             data: JSON.stringify(
                 {
                     "Id": $('#Id').val(),
+                    "AcctNum": $('#Id').val(),
                     "Pin": $("#Pin").val(),
                     "Balance": $("#Balance").val(),
                     "FirstName": $("#FirstName").val(),
-                    "LastName": $("#LastName").val()
+                    "LastName": $("#LastName").val(),
+                    "University": $("#University").val()
                 }),
             success: function (data, textStatus, jQxhr) {
                 alert("Data Inserted");
@@ -103,11 +111,12 @@
             data: JSON.stringify(
                 {
                     "Id": $('#Id').val(),
-                    "acctNo": $("#acctNo").val(),
+                    "AcctNum": $('#Id').val(),
                     "Pin": $("#Pin").val(),
                     "Balance": $("#Balance").val(),
                     "FirstName": $("#FirstName").val(),
-                    "LastName": $("#LastName").val()
+                    "LastName": $("#LastName").val(),
+                    "University": $("#University").val()
                 }),
             success: function (data, textStatus, jQxhr) {
                 alert("Data Updated");
@@ -137,22 +146,35 @@
         });
     }
 
+    // 
+
     function upload_avatar() {
+        //var formData = new FormData();
+        //formData.append("file", $("#file")[0].files[0]);
         var formData = new FormData();
-        formData.append("file", $("#file")[0].files[0]);
+        var files = $('#file')[0].files;
+
+        // Check file selected or not
+        if (files.length > 0) {
+            formData.append('file', files[0]);
+        }
+
         $.ajax({
-            url: '/students/UploadFiles',
+            url: '/students/UploadFiles/' + $('#Id').val(),
             type: 'post',
             data: formData,
             processData: false,
-            contentType: false
-                dataType: 'text',
+            contentType: false,
+            //dataType: 'text',
             success: function (data) {
                 var params = JSON.parse(data)
                 $("#img").attr("src", params);
             },
             error: function (data) {
-
+                alert("Error");
+                console.log(xhr.statusText);
+                console.log(textStatus);
+                console.log(error);
             }
         });
     }
