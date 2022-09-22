@@ -18,14 +18,18 @@ namespace WebGUI.Controllers
         [HttpGet]
         public IActionResult Search(int id)
         {
-            if (id == null)
+            if (id == 0)
             {
-                return BadRequest();
+                return BadRequest("id cannot be null or 0");
             }
             RestClient restClient = new RestClient(URL);
             RestRequest restRequest = new RestRequest("api/student/Get", Method.Get);
             restRequest.AddParameter("id", id);
             RestResponse restResponse = restClient.Execute(restRequest);
+            if (restResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return NotFound(string.Format("Student with id = {0} was not found", id));
+            }
             return Ok(restResponse.Content);
         }
 
@@ -53,15 +57,16 @@ namespace WebGUI.Controllers
             restRequest.AddBody(student);
             RestResponse restResponse = restClient.Execute(restRequest);
 
-            Student returnStudent = JsonConvert.DeserializeObject<Student>(restResponse.Content);
-            if (returnStudent != null)
+            Student returnStudent = null;
+            if (restResponse.IsSuccessful)
             {
-                return Ok(returnStudent);
+                JsonConvert.DeserializeObject<Student>(restResponse.Content);
             }
-            else
+            else if (restResponse.StatusCode == System.Net.HttpStatusCode.Conflict)
             {
-                return BadRequest();
+                return Conflict(string.Format("Student with id = {0} already exist.", student.Id));
             }
+            return Ok(returnStudent);
         }
 
         [HttpDelete]
@@ -80,7 +85,11 @@ namespace WebGUI.Controllers
             {
                 Console.WriteLine("Delete Successful!");
             }
-            return Ok("Delete");
+            else if (restResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return NotFound(string.Format("Student with id = {0} was not found", id));
+            }
+            return Ok();
         }
 
         [HttpPut]
@@ -99,7 +108,11 @@ namespace WebGUI.Controllers
             {
                 Console.WriteLine("Update Successful!");
             }
-            return Ok("Update");
+            else if (restResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return NotFound(string.Format("Student with id = {0} was not found", student.Id));
+            }
+            return Ok();
         }
 
         [HttpGet]
@@ -113,7 +126,7 @@ namespace WebGUI.Controllers
             {
                 Console.WriteLine("GenerateDB Successful!");
             }
-            return Ok("GenerateDB");
+            return Ok();
         }
 
         public IActionResult UploadFiles(List<IFormFile> files, int id)

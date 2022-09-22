@@ -12,10 +12,10 @@ namespace WebGUI.Controllers
             ViewBag.Title = "Home";
 
             RestClient restClient = new RestClient("http://localhost:54863/");
-            RestRequest restRequest = new RestRequest("api/students/", Method.Get);
+            RestRequest restRequest = new RestRequest("api/students/all", Method.Get);
             RestResponse restResponse = restClient.Execute(restRequest);
 
-            List<Student> students = new List<Student>();//JsonConvert.DeserializeObject<List<Student>>(restResponse.Content);
+            List<Student> students = JsonConvert.DeserializeObject<List<Student>>(restResponse.Content);
             return View(students);
         }
     }

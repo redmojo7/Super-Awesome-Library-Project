@@ -145,8 +145,7 @@ namespace BusinessWebAPI.App_Start
                 if (response.IsSuccessful)
                 {
                     result = "success";
-                }
-                if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
+                } else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
                 {
                     result = "Conflict";
                 }
@@ -171,6 +170,10 @@ namespace BusinessWebAPI.App_Start
                 if (response.IsSuccessful)
                 {
                     result = "success";
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    result = "NotFound";
                 }
             }
             return result;

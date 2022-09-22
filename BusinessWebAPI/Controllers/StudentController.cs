@@ -124,8 +124,9 @@ namespace BusinessWebAPI.Controllers
             catch (Exception e)
             {
                 var message = string.Format("Student with id = {0} was not found", id);
-                throw new HttpResponseException(
-                    Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
+                // throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
+                return NotFound();
+
             }
             return Ok(student);
         }

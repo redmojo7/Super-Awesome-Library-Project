@@ -50,7 +50,7 @@
                 $("#University").val(obj.University);
             },
             error: function (xhr, textStatus, error) {
-                alert("Error");
+                alert("Error: " + xhr.responseText);
                 console.log(xhr.statusText);
                 console.log(textStatus);
                 console.log(error);
@@ -77,7 +77,7 @@
                 alert("Data Inserted");
             },
             error: function (xhr, textStatus, error) {
-                alert("Error");
+                alert("Error: " + xhr.responseText);
                 console.log(xhr.statusText);
                 console.log(textStatus);
                 console.log(error);
@@ -94,8 +94,8 @@
             success: function (data, textStatus, jQxhr) {
                 alert("Data Dleted");
             },
-            error: function (jqXhr, textStatus, errorThrown) {
-                alert("Error");
+            error: function (xhr, textStatus, error) {
+                alert("Error: " + xhr.responseText);
                 console.log(xhr.statusText);
                 console.log(textStatus);
                 console.log(error);
@@ -122,7 +122,7 @@
                 alert("Data Updated");
             },
             error: function (xhr, textStatus, error) {
-                alert("Error");
+                alert("Error: " + xhr.responseText);
                 console.log(xhr.statusText);
                 console.log(textStatus);
                 console.log(error);
@@ -138,7 +138,7 @@
                 alert("DB generated");
             },
             error: function (xhr, textStatus, error) {
-                alert("Error");
+                alert("Error: " + xhr.responseText);
                 console.log(xhr.statusText);
                 console.log(textStatus);
                 console.log(error);
@@ -170,8 +170,8 @@
                 var params = JSON.parse(data)
                 $("#img").attr("src", params);
             },
-            error: function (data) {
-                alert("Error");
+            error: function (xhr, textStatus, error) {
+                alert("Error: " + xhr.responseText);
                 console.log(xhr.statusText);
                 console.log(textStatus);
                 console.log(error);
