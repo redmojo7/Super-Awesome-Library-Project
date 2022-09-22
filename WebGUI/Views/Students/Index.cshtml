@@ -198,8 +198,8 @@
             contentType: false,
             success: function (data) {
                //$("#image-preview").attr("src", data);
-               if (data.d != null) {
-                var results = jQuery.parseJSON(data.d);
+               if (data != null) {
+                    var results = _arrayBufferToBase64(data);
                 for (var key in results) {
                     //the results is a base64 string.  convert it to an image and assign as 'src'
                     document.getElementById("image-preview").src = "data:image/png;base64," + results[key];
@@ -213,8 +213,18 @@
                 console.log(error);
             }
         });
-        
     }
+
+    function _arrayBufferToBase64(buffer) {
+        var binary = '';
+        var bytes = new Uint8Array(buffer);
+        var len = bytes.byteLength;
+        for (var i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
+    }
+
 
     // 
 
