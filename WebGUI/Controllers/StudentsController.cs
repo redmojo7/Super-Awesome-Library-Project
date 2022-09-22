@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Net;
 using WebGUI.Models;
 
 namespace WebGUI.Controllers
@@ -9,6 +10,7 @@ namespace WebGUI.Controllers
     {
 
         string URL = "http://localhost:54863/";
+
         public IActionResult Index()
         {
             ViewBag.Title = "Students";
@@ -127,6 +129,30 @@ namespace WebGUI.Controllers
                 Console.WriteLine("GenerateDB Successful!");
             }
             return Ok();
+        }
+
+        [HttpGet]
+        public  HttpResponseMessage Profile(string path)
+        {
+            HttpResponseMessage response;
+            if (path != null)
+            {
+                // send http request to search
+                RestClient client = new RestClient(URL);
+                RestRequest restRequest = new RestRequest("api/profile", Method.Get);
+                restRequest.AddParameter("path", path);
+                byte[] bitmapdata = client.DownloadData(restRequest);
+                response = new HttpResponseMessage();
+                response.Content = new ByteArrayContent(bitmapdata);
+                response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+                response.StatusCode = HttpStatusCode.OK;
+                return response;
+            }
+            else
+            {
+                response = new HttpResponseMessage(HttpStatusCode.BadRequest);
+                return response;
+            }
         }
 
         public IActionResult UploadFiles(List<IFormFile> files, int id)

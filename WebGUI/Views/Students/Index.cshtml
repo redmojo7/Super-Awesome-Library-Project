@@ -14,6 +14,7 @@
                     <input type="text" id="Pin" name="Pin" placeholder="Pin" />
                     <input type="text" id="Balance" name="Balance" placeholder="Balance" />
                     <input type="text" id="University" name="University" placeholder="Student University" />
+                    <b id="Avatar" name = "Avatar"></b>
                 </form>
             </td>
             <td>
@@ -24,7 +25,7 @@
                 </form>
             </td>
             <td>
-                <button id="search" onclick="search()">Search</button>
+                <button id="search" onclick="get_avatar()">Search</button>
                 <button id="insert" onclick="insert()">Insert</button>
                 <button id="deleteStu" onclick="deleteStu()">Delete</button>
                 <button id="update" onclick="update()">Update</button>
@@ -48,6 +49,7 @@
                 $("#Pin").val(obj.Pin);
                 $("#Balance").val(obj.Balance);
                 $("#University").val(obj.University);
+
             },
             error: function (xhr, textStatus, error) {
                 alert("Error: " + xhr.responseText);
@@ -136,6 +138,28 @@
             url: '/students/generateDB/',
             success: function (data, textStatus, jQxhr) {
                 alert("DB generated");
+            },
+            error: function (xhr, textStatus, error) {
+                alert("Error: " + xhr.responseText);
+                console.log(xhr.statusText);
+                console.log(textStatus);
+                console.log(error);
+            }
+        });
+    }
+
+    function get_avatar() {
+
+        $.ajax({
+            url: '/students/profile/',
+            type: 'get',
+            data: 'path=' + $('#Avatar').val(),
+            processData: false,
+            contentType: false,
+            //dataType: 'text',
+            success: function (data) {
+                var params = JSON.parse(data)
+                $("#img").attr("src", params);
             },
             error: function (xhr, textStatus, error) {
                 alert("Error: " + xhr.responseText);

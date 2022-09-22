@@ -22,17 +22,17 @@ div#navigation li {
     float: left;
 }
 
-    div#navigation li a {
-        display: block;
-        color: white;
-        text-align: center;
-        padding: 16px;
-        text-decoration: none;
-    }
+div#navigation li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 16px;
+    text-decoration: none;
+}
 
-        div#navigation li a:hover {
-            background-color: #111111;
-        }
+div#navigation li a:hover {
+    background-color: #111111;
+}
 
 div#main {
     background-color: palegreen;
