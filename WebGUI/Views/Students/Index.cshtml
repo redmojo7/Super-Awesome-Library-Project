@@ -14,18 +14,20 @@
                     <input type="text" id="Pin" name="Pin" placeholder="Pin" />
                     <input type="text" id="Balance" name="Balance" placeholder="Balance" />
                     <input type="text" id="University" name="University" placeholder="Student University" />
-                    <b id="Avatar" name = "Avatar"></b>
+                    <b id="Avatar" name = "Avatar">111</b>
                 </form>
             </td>
             <td>
+                <img id="image-preview" style="width:80px" class="rounded rounded-circle" alt="placeholder" />
                 <form id="uploadForm" enctype="multipart/form-data">
                     <label>Avatar</label>
-                    <input id="file" type="file" name="file" />
+                    <input id="file" type="file" name="file" class="form-control" accept="image/*"
+                           onchange="updatePreview(this, 'image-preview')" />
                     <button id="upload" type="button" onclick="upload_avatar()">Upload Avata</button>
                 </form>
             </td>
             <td>
-                <button id="search" onclick="get_avatar()">Search</button>
+                <button id="search" onclick="search()">Search</button>
                 <button id="insert" onclick="insert()">Insert</button>
                 <button id="deleteStu" onclick="deleteStu()">Delete</button>
                 <button id="update" onclick="update()">Update</button>
@@ -36,6 +38,19 @@
 
 </div>
 <script>
+
+     function updatePreview(input, target) {
+        let file = input.files[0];
+        let reader = new FileReader();
+
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            let img = document.getElementById(target);
+            // can also use "this.result"
+            img.src = reader.result;
+        }
+    }
+
     function search() {
         $.ajax({
             url: '/students/search/' + $('#Id').val(),
@@ -49,7 +64,9 @@
                 $("#Pin").val(obj.Pin);
                 $("#Balance").val(obj.Balance);
                 $("#University").val(obj.University);
-
+                $("#Avatar").val(obj.Avatar);
+                // get avarta
+                get_avatar()
             },
             error: function (xhr, textStatus, error) {
                 alert("Error: " + xhr.responseText);
@@ -149,17 +166,38 @@
     }
 
     function get_avatar() {
+        /*
+        // Simulate a call to Dropbox or other service that can
+        // return an image as an ArrayBuffer.
+        var xhr = new XMLHttpRequest();
 
+        // Use JSFiddle logo as a sample image to avoid complicating
+        // this example with cross-domain issues.
+        xhr.open("GET", "http://fiddle.jshell.net/img/logo.png", true);
+
+        // Ask for the result as an ArrayBuffer.
+        xhr.responseType = "arraybuffer";
+
+        xhr.onload = function (e) {
+            // Obtain a blob: URL for the image data.
+            var arrayBufferView = new Uint8Array(this.response);
+            var blob = new Blob([arrayBufferView], { type: "image/jpeg" });
+            var urlCreator = window.URL || window.webkitURL;
+            var imageUrl = urlCreator.createObjectURL(blob);
+            var img = document.querySelector("#image-preview");
+            img.src = imageUrl;
+        };
+       
+        xhr.send(); */
+        
         $.ajax({
             url: '/students/profile/',
             type: 'get',
             data: 'path=' + $('#Avatar').val(),
             processData: false,
             contentType: false,
-            //dataType: 'text',
             success: function (data) {
-                var params = JSON.parse(data)
-                $("#img").attr("src", params);
+               $("#image-preview").attr("src", data);
             },
             error: function (xhr, textStatus, error) {
                 alert("Error: " + xhr.responseText);
@@ -168,6 +206,7 @@
                 console.log(error);
             }
         });
+        
     }
 
     // 

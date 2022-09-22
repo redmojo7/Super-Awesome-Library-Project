@@ -2,7 +2,9 @@
 using Newtonsoft.Json;
 using RestSharp;
 using System.Net;
+using System.Net.NetworkInformation;
 using WebGUI.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WebGUI.Controllers
 {
@@ -132,9 +134,8 @@ namespace WebGUI.Controllers
         }
 
         [HttpGet]
-        public  HttpResponseMessage Profile(string path)
+        public IActionResult Profile(string path)
         {
-            HttpResponseMessage response;
             if (path != null)
             {
                 // send http request to search
@@ -142,16 +143,11 @@ namespace WebGUI.Controllers
                 RestRequest restRequest = new RestRequest("api/profile", Method.Get);
                 restRequest.AddParameter("path", path);
                 byte[] bitmapdata = client.DownloadData(restRequest);
-                response = new HttpResponseMessage();
-                response.Content = new ByteArrayContent(bitmapdata);
-                response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
-                response.StatusCode = HttpStatusCode.OK;
-                return response;
+                return File(bitmapdata, "image/png");
             }
             else
             {
-                response = new HttpResponseMessage(HttpStatusCode.BadRequest);
-                return response;
+                return BadRequest();
             }
         }
 
