@@ -197,7 +197,14 @@
             processData: false,
             contentType: false,
             success: function (data) {
-               $("#image-preview").attr("src", data);
+               //$("#image-preview").attr("src", data);
+               if (data.d != null) {
+                var results = jQuery.parseJSON(data.d);
+                for (var key in results) {
+                    //the results is a base64 string.  convert it to an image and assign as 'src'
+                    document.getElementById("image-preview").src = "data:image/png;base64," + results[key];
+                }
+            }
             },
             error: function (xhr, textStatus, error) {
                 alert("Error: " + xhr.responseText);
