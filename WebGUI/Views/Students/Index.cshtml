@@ -173,27 +173,30 @@
     }
 
     function get_avatar() {
-        $.ajax({
-            url: '/students/profile/',
-            type: 'get',
-            data: 'path='+ $("#Avatar").val(),   //'path=bitmap-1.png',
-            processData: false,
-            contentType: false,
-            success: function (b64Response) {
-                $("#image-preview").attr("src", "data:image/png;base64," + b64Response);
-                // convert to Base64
-                //var st = bin2string(data)
-                //var b64Response = btoa(st);
-                //the results is a base64 string.  convert it to an image and assign as 'src'
-                //document.getElementById("image-preview").src = "data:image/png;base64," + b64Response;
-            },
-            error: function (xhr, textStatus, error) {
-                alert("Error: " + xhr.responseText);
-                console.log(xhr.statusText);
-                console.log(textStatus);
-                console.log(error);
-            }
-        });
+        if($("#Avatar").val() !== null && $("#Avatar").val() !== undefined && $("#Avatar").val() !== '')
+        {
+            $.ajax({
+                url: '/students/profile/',
+                type: 'get',
+                data: 'path='+ $("#Avatar").val(),   //'path=bitmap-1.png',
+                processData: false,
+                contentType: false,
+                success: function (b64Response) {
+                    $("#image-preview").attr("src", "data:image/png;base64," + b64Response);
+                    // convert to Base64
+                    //var st = bin2string(data)
+                    //var b64Response = btoa(st);
+                    //the results is a base64 string.  convert it to an image and assign as 'src'
+                    //document.getElementById("image-preview").src = "data:image/png;base64," + b64Response;
+                },
+                error: function (xhr, textStatus, error) {
+                    alert("Error: " + xhr.responseText);
+                    console.log(xhr.statusText);
+                    console.log(textStatus);
+                    console.log(error);
+                }
+            });
+        }
     }
 
 
