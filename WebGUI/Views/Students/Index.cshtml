@@ -1,0 +1,236 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div id="studentForm">
+    <table>
+        <tr>
+            <td>
+                <form>
+                    <input type="text" id="Id" name="Id" placeholder="Student ID" />
+                    <input type="text" id="FirstName" name="FirstName" placeholder="First Name" />
+                    <input type="text" id="LastName" name="LastName" placeholder="Last Name" />
+                    <input type="text" id="Pin" name="Pin" placeholder="Pin" />
+                    <input type="text" id="Balance" name="Balance" placeholder="Balance" />
+                    <input type="text" id="University" name="University" placeholder="Student University" />
+                </form>
+            </td>
+            <td>
+                <img id="image-preview" style="width:80px" class="rounded rounded-circle" alt="placeholder" />
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <label id="Avatar" >Avarta</label>
+                    <input id="file" type="file" name="file" class="form-control" accept="image/*"
+                           onchange="updatePreview(this, 'image-preview')" />
+                    <button id="upload" type="button" onclick="upload_avatar()">Upload Avarta</button>
+                </form>
+            </td>
+            <td>
+                <button id="search" onclick="search()">Search</button>
+                <button id="insert" onclick="insert()">Insert</button>
+                <button id="deleteStu" onclick="deleteStu()">Delete</button>
+                <button id="update" onclick="update()">Update</button>
+                <button id="generate_DB" onclick="generate_DB()">Generating a database</button>
+            </td>
+        </tr>
+    </table>
+
+</div>
+<script>
+
+     function updatePreview(input, target) {
+        var file = input.files[0];
+        var reader = new FileReader();
+
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            var img = document.getElementById(target);
+            // can also use "this.result"
+            img.src = reader.result;
+        }
+    }
+
+    function search() {
+        $.ajax({
+            url: '/students/search/' + $('#Id').val(),
+            type: 'get',
+            contentType: 'application/json',
+            processData: false,
+            success: function (data, textStatus, jQxhr) {
+                var obj = JSON.parse(data);
+                $("#FirstName").val(obj.FirstName);
+                $("#LastName").val(obj.LastName);
+                $("#Pin").val(obj.Pin);
+                $("#Balance").val(obj.Balance);
+                $("#University").val(obj.University);
+                $("#Avatar").val(obj.Avatar);
+                // get avarta
+                get_avatar();
+            },
+            error: function (xhr, textStatus, error) {
+                alert("Error: " + xhr.responseText);
+                console.log(xhr.statusText);
+                console.log(textStatus);
+                console.log(error);
+            }
+        });
+    }
+
+    function insert() {
+        $.ajax({
+            type: 'POST',
+            url: '/students/insert/',
+            contentType: 'application/json',
+            data: JSON.stringify(
+                {
+                    "Id": $('#Id').val(),
+                    "AcctNum": $('#Id').val(),
+                    "Pin": $("#Pin").val(),
+                    "Balance": $("#Balance").val(),
+                    "FirstName": $("#FirstName").val(),
+                    "LastName": $("#LastName").val(),
+                    "University": $("#University").val()
+                }),
+            success: function (data, textStatus, jQxhr) {
+                alert("Data Inserted");
+            },
+            error: function (xhr, textStatus, error) {
+                alert("Error: " + xhr.responseText);
+                console.log(xhr.statusText);
+                console.log(textStatus);
+                console.log(error);
+            }
+        });
+    }
+
+    function deleteStu() {
+        $.ajax({
+            url: '/students/delete/' + $('#Id').val(),
+            type: 'delete',
+            contentType: 'application/json',
+            processData: false,
+            success: function (data, textStatus, jQxhr) {
+                alert("Data Dleted");
+            },
+            error: function (xhr, textStatus, error) {
+                alert("Error: " + xhr.responseText);
+                console.log(xhr.statusText);
+                console.log(textStatus);
+                console.log(error);
+            }
+        });
+    }
+
+    function update() {
+        $.ajax({
+            type: 'PUT',
+            url: '/students/update/',
+            contentType: 'application/json',
+            data: JSON.stringify(
+                {
+                    "Id": $('#Id').val(),
+                    "AcctNum": $('#Id').val(),
+                    "Pin": $("#Pin").val(),
+                    "Balance": $("#Balance").val(),
+                    "FirstName": $("#FirstName").val(),
+                    "LastName": $("#LastName").val(),
+                    "University": $("#University").val()
+                }),
+            success: function (data, textStatus, jQxhr) {
+                alert("Data Updated");
+            },
+            error: function (xhr, textStatus, error) {
+                alert("Error: " + xhr.responseText);
+                console.log(xhr.statusText);
+                console.log(textStatus);
+                console.log(error);
+            }
+        });
+    }
+
+    function generate_DB() {
+        $.ajax({
+            type: 'GET',
+            url: '/students/generateDB/',
+            success: function (data, textStatus, jQxhr) {
+                alert("DB generated");
+            },
+            error: function (xhr, textStatus, error) {
+                alert("Error: " + xhr.responseText);
+                console.log(xhr.statusText);
+                console.log(textStatus);
+                console.log(error);
+            }
+        });
+    }
+
+    function bin2string(array){
+	    var result = "";
+	    for(var i = 0; i < array.length; ++i){
+		    result+= (String.fromCharCode(array[i]));
+	    }
+	    return result;
+    }
+
+    function get_avatar() {
+        if($("#Avatar").val() !== null && $("#Avatar").val() !== undefined && $("#Avatar").val() !== '')
+        {
+            $.ajax({
+                url: '/students/profile/',
+                type: 'get',
+                data: 'path='+ $("#Avatar").val(),   //'path=bitmap-1.png',
+                processData: false,
+                contentType: false,
+                success: function (b64Response) {
+                    $("#image-preview").attr("src", "data:image/png;base64," + b64Response);
+                    // convert to Base64
+                    //var st = bin2string(data)
+                    //var b64Response = btoa(st);
+                    //the results is a base64 string.  convert it to an image and assign as 'src'
+                    //document.getElementById("image-preview").src = "data:image/png;base64," + b64Response;
+                },
+                error: function (xhr, textStatus, error) {
+                    alert("Error: " + xhr.responseText);
+                    console.log(xhr.statusText);
+                    console.log(textStatus);
+                    console.log(error);
+                }
+            });
+        }
+    }
+
+
+    // 
+
+    function upload_avatar() {
+        //var formData = new FormData();
+        //formData.append("file", $("#file")[0].files[0]);
+        var formData = new FormData();
+        var files = $('#file')[0].files;
+
+        // Check file selected or not
+        if (files.length > 0) {
+            formData.append('file', files[0]);
+        }
+
+        $.ajax({
+            url: '/students/UploadFiles/' + $('#Id').val(),
+            type: 'post',
+            data: formData,
+            processData: false,
+            contentType: false,
+            //dataType: 'text',
+            success: function (data) {
+                var params = JSON.parse(data)
+                $("#img").attr("src", params);
+            },
+            error: function (xhr, textStatus, error) {
+                alert("Error: " + xhr.responseText);
+                console.log(xhr.statusText);
+                console.log(textStatus);
+                console.log(error);
+            }
+        });
+    }
+
+</script>

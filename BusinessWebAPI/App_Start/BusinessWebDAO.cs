@@ -49,24 +49,28 @@ namespace BusinessWebAPI.App_Start
 
         internal int GetNumEntries()
         {
-            
+            List<Student> students = All();
+            int num = 0;
+            if (students != null)
+                num = students.Count;
+            return num;
+        }
+
+        internal List<Student> All()
+        {
             RestClient client = new RestClient(URL);
             RestRequest request = new RestRequest("api/Students", Method.Get);
             RestResponse response = client.Execute(request);
             List<Student> students = JsonConvert.DeserializeObject<List<Student>>(response.Content);
-            int num = 0;
-            if (students != null)
-                num = students.Count;
-            
-            return num;
+            return students;
         }
 
-        internal string Delete(uint acctNo)
+        internal string Delete(uint id)
         {
             string result = "Error";
             RestClient client = new RestClient(URL);
             RestRequest request = new RestRequest("api/Students/{id}", Method.Delete);
-            request.AddUrlSegment("id", acctNo);
+            request.AddUrlSegment("id", id);
             RestResponse response = client.Execute(request);
             if (response != null)
             {
@@ -141,8 +145,7 @@ namespace BusinessWebAPI.App_Start
                 if (response.IsSuccessful)
                 {
                     result = "success";
-                }
-                if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
+                } else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
                 {
                     result = "Conflict";
                 }
@@ -167,6 +170,10 @@ namespace BusinessWebAPI.App_Start
                 if (response.IsSuccessful)
                 {
                     result = "success";
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    result = "NotFound";
                 }
             }
             return result;

@@ -20,9 +20,9 @@ namespace BusinessWebAPI.App_Start
             businessWebDAO = new BusinessWebDAO();
         }
 
-        internal string Delete(uint Id)
+        internal string Delete(uint id)
         {
-            return businessWebDAO.Delete(Id);
+            return businessWebDAO.Delete(id);
         }
 
         internal Bitmap getAvatar(string path)
@@ -70,6 +70,11 @@ namespace BusinessWebAPI.App_Start
         internal string UploadAvarta(int id, HttpPostedFile file)
         {
             return businessWebDAO.UploadAvarta(id, file);
+        }
+
+        internal List<Student> All()
+        {
+            return businessWebDAO.All();
         }
     }
 }
