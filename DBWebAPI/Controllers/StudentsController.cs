@@ -222,7 +222,6 @@ namespace DBWebAPI.Controllers
         [HttpPost]
         public IHttpActionResult avarta(int id)
         {
-            HttpRequest request = HttpContext.Current.Request;
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
             // check file
             if (file.ContentLength > 0)

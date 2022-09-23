@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using RestSharp;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.NetworkInformation;
 using WebGUI.Models;
 using static System.Net.Mime.MediaTypeNames;
@@ -133,6 +134,7 @@ namespace WebGUI.Controllers
             return Ok();
         }
 
+        
         [HttpGet]
         public IActionResult Profile(string path)
         {
@@ -143,7 +145,9 @@ namespace WebGUI.Controllers
                 RestRequest restRequest = new RestRequest("api/profile", Method.Get);
                 restRequest.AddParameter("path", path);
                 byte[] bitmapdata = client.DownloadData(restRequest);
-                return File(bitmapdata, "image/png");
+                //return File(bitmapdata, "image/png");
+                string base64ImageRepresentation = Convert.ToBase64String(bitmapdata);
+                return Ok(base64ImageRepresentation);
             }
             else
             {
@@ -151,48 +155,49 @@ namespace WebGUI.Controllers
             }
         }
 
-        public IActionResult UploadFiles(List<IFormFile> files, int id)
+        [HttpPost]
+        public IActionResult UploadFiles(int id)
         {
-            //https://stackoverflow.com/questions/51021182/httppostedfilebase-in-asp-net-core-2-0
-            string result = "Error";
-            long size = files.Sum(f => f.Length);
-            if (size == 0)
+            try
             {
-                return BadRequest();
-            }
-            // full path to file in temp location
-            var filePath = Path.GetTempFileName();
-
-            foreach (var formFile in files)
-            {
-                if (formFile.Length > 0)
+                long size = Request.Form.Files.Sum(f => f.Length);
+                if (size == 0 || id == 0)
                 {
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        formFile.CopyTo(stream);
-                        // process uploaded files
-                        // Don't rely on or trust the FileName property without validation.
+                    return BadRequest("avarta or id empty");
+                }
+                var file = Request.Form.Files[0];
+                var folderName = Path.Combine("Resources", "Images");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                if (file.Length > 0 || id == 0)
+                {
+                    //Read the uploaded File as Byte Array from FileUpload control.
+                    Stream fs = file.OpenReadStream();
+                    BinaryReader br = new BinaryReader(fs);
 
-                        //Read the uploaded File as Byte Array from FileUpload control.
-                        //Stream fs = file.InputStream;
-                        BinaryReader br = new BinaryReader(stream);
-                        RestClient client = new RestClient(URL);
-                        RestRequest request = new RestRequest("api/Students/avarta/{id}", Method.Post);
-                        request.AddUrlSegment("id", id);
-                        request.AddFile("avarta", br.ReadBytes((Int32)stream.Length), formFile.FileName);
-                        request.AddHeader("Content-Type", "multipart/form-data");
-                        RestResponse response = client.Execute(request);
-                        if (response != null)
+                    RestClient client = new RestClient(URL);
+                    RestRequest request = new RestRequest("api/Students/avarta/{id}", Method.Post);
+                    request.AddUrlSegment("id", id);
+                    request.AddFile("avarta", br.ReadBytes((Int32)fs.Length), file.FileName);
+                    request.AddHeader("Content-Type", "multipart/form-data");
+                    RestResponse response = client.Execute(request);
+                    if (response != null)
+                    {
+                        if (!response.IsSuccessful)
                         {
-                            if (response.IsSuccessful)
-                            {
-                                result = "success";
-                            }
+                            return StatusCode(500, $"Internal server error.");
                         }
                     }
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest("file is empty");
                 }
             }
-            return Ok(new { count = files.Count, size, filePath });
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
         }
     }
 }
