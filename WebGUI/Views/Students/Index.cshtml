@@ -13,7 +13,6 @@
                     <input type="text" id="LastName" name="LastName" placeholder="Last Name" />
                     <input type="text" id="Pin" name="Pin" placeholder="Pin" />
                     <input type="text" id="Balance" name="Balance" placeholder="Balance" />
-                    <input type="text" id="University" name="University" placeholder="Student University" />
                 </form>
             </td>
             <td>
@@ -62,7 +61,6 @@
                 $("#LastName").val(obj.LastName);
                 $("#Pin").val(obj.Pin);
                 $("#Balance").val(obj.Balance);
-                $("#University").val(obj.University);
                 $("#Avatar").val(obj.Avatar);
                 // get avarta
                 get_avatar();
@@ -88,8 +86,7 @@
                     "Pin": $("#Pin").val(),
                     "Balance": $("#Balance").val(),
                     "FirstName": $("#FirstName").val(),
-                    "LastName": $("#LastName").val(),
-                    "University": $("#University").val()
+                    "LastName": $("#LastName").val()
                 }),
             success: function (data, textStatus, jQxhr) {
                 alert("Data Inserted");
@@ -133,8 +130,7 @@
                     "Pin": $("#Pin").val(),
                     "Balance": $("#Balance").val(),
                     "FirstName": $("#FirstName").val(),
-                    "LastName": $("#LastName").val(),
-                    "University": $("#University").val()
+                    "LastName": $("#LastName").val()
                 }),
             success: function (data, textStatus, jQxhr) {
                 alert("Data Updated");
